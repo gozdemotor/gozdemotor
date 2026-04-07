@@ -14,6 +14,9 @@ export default function ProtectedAdminRoute({ children }) {
           error: userError,
         } = await supabase.auth.getUser();
 
+        console.log("USER:", user);
+        console.log("USER ERROR:", userError);
+
         if (userError || !user) {
           setIsAdmin(false);
           setLoading(false);
@@ -22,9 +25,12 @@ export default function ProtectedAdminRoute({ children }) {
 
         const { data, error } = await supabase
           .from("admins")
-          .select("id")
-          .eq("id", user.id)
+          .select("*")
+          .eq("email", user.email)
           .maybeSingle();
+
+        console.log("ADMIN DATA:", data);
+        console.log("ADMIN ERROR:", error);
 
         if (!error && data) {
           setIsAdmin(true);
@@ -32,6 +38,7 @@ export default function ProtectedAdminRoute({ children }) {
           setIsAdmin(false);
         }
       } catch (error) {
+        console.log("CHECK ADMIN CATCH:", error);
         setIsAdmin(false);
       } finally {
         setLoading(false);
