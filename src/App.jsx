@@ -1,49 +1,36 @@
 export default function App() {
-  const featuredCategories = [
-    {
-      title: "Motor Yedek Parça",
-      desc: "CG, cup, scooter ve birçok model için günlük ihtiyaç duyulan parçalar.",
-    },
-    {
-      title: "Aksesuar Ürünleri",
-      desc: "Kask, elcik, çanta, telefon tutucu, bakım ürünleri ve daha fazlası.",
-    },
-    {
-      title: "Servis & Tamir",
-      desc: "Bakım, arıza tespiti, parça değişimi ve pratik esnaf çözümü.",
-    },
+  const services = [
+    "Yedek Parça",
+    "Aksesuar",
+    "Servis & Tamir",
   ];
 
-  const productGroups = [
-    "Yağlar ve bakım ürünleri",
-    "Zincir - dişli setleri",
-    "Fren balata ve diskler",
-    "Far, sinyal, ampul",
-    "Debriyaj ve gaz telleri",
-    "Karbüratör ve motor parçaları",
-    "Akü ve elektrik ekipmanları",
-    "Kask, çanta ve aksesuar",
+  const products = [
+    "Motor Yağları",
+    "Zincir Dişli Setleri",
+    "Fren Balata",
+    "Ampul ve Elektrik",
+    "Kask ve Çanta",
+    "Bakım Ürünleri",
   ];
 
-  const advantages = [
-    "Yerel esnaf güveni",
+  const reasons = [
     "Hızlı parça temini",
-    "Servis ve parça tek noktada",
-    "Türkiye geneli gönderim imkanı",
+    "Esnaf işi güven",
+    "Şuhut içi kolay ulaşım",
+    "Türkiye geneli gönderim",
   ];
-
-  const brands = ["Motul", "Castrol", "Ngk", "RK", "Did", "Monero", "Ncr", "Osram"];
 
   return (
-    <div className="site">
+    <div className="site pro-site">
       <header className="header">
         <div className="container header-inner">
           <div>
-            <div className="logo-text">GÖZDE MOTOR</div>
+            <h1 className="logo">GÖZDE MOTOR</h1>
             <div className="logo-sub">Yedek Parça • Aksesuar • Servis</div>
           </div>
 
-          <nav className="nav">
+          <nav>
             <a href="#anasayfa">Ana Sayfa</a>
             <a href="#hizmetler">Hizmetler</a>
             <a href="#urunler">Ürünler</a>
@@ -52,118 +39,82 @@ export default function App() {
         </div>
       </header>
 
-      <section id="anasayfa" className="hero">
+      <section className="hero pro-hero" id="anasayfa">
         <div className="container hero-grid">
           <div>
-            <div className="badge">Şuhut / Afyon</div>
-            <h1>
-              Motoruna ne lazımsa <span>Gözde Motor</span>'da.
-            </h1>
-            <p className="hero-text">
-              Yedek parça, aksesuar, servis ve tamir hizmetlerini tek noktada bul.
-              Yerel esnaf sıcaklığıyla, hızlı çözüm ve güven veren hizmet anlayışı.
+            <div className="hero-badge">ŞUHUT / AFYON</div>
+            <h2>Motoruna ne lazımsa <span>Gözde Motor</span>'da.</h2>
+            <p>
+              Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern motosiklet mağazası.
+              Güvenilir ürün, hızlı destek ve samimi esnaf anlayışı.
             </p>
 
-            <div className="hero-buttons">
-              <a className="btn btn-primary" href="tel:05437182017">
-                Hemen Ara
-              </a>
-              <a className="btn btn-secondary" href="#iletisim">
-                İletişime Geç
-              </a>
+            <div className="hero-actions">
+              <a href="https://wa.me/905437182017" target="_blank" rel="noreferrer" className="btn">WhatsApp'tan Yaz</a>
+              <a href="tel:05437182017" className="btn btn-outline">Hemen Ara</a>
             </div>
 
-            <div className="stats">
-              <div className="stat-card">
+            <div className="hero-stats">
+              <div className="stat-box">
                 <strong>Parça</strong>
                 <span>Geniş ürün grubu</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-box">
                 <strong>Servis</strong>
                 <span>Pratik çözüm</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-box">
                 <strong>Kargo</strong>
                 <span>Türkiye geneli</span>
               </div>
             </div>
           </div>
 
-          <div className="hero-panel">
-            <div className="hero-box">
-              <div className="hero-box-top">
-                <div>
-                  <div className="muted">Marka Kimliği</div>
-                  <div className="gm">GM</div>
-                </div>
-                <div className="chip">Yedek Parça</div>
-              </div>
-
-              <div className="card-list">
-                {featuredCategories.map((item) => (
-                  <div key={item.title} className="feature-card">
-                    <h3>{item.title}</h3>
-                    <p>{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="hero-panel-pro">
+            <div className="panel-tag">GM • PRO VİTRİN</div>
+            <h3>Yedek Parça ve Aksesuar Merkezi</h3>
+            <p>Instagram, WhatsApp ve mağaza satışını tek çatı altında toplayan güçlü vitrin sitesi.</p>
+            <ul>
+              <li>Motor yedek parça satışı</li>
+              <li>Aksesuar ve ekipman ürünleri</li>
+              <li>Servis ve tamir desteği</li>
+              <li>Hızlı iletişim ve kolay yönlendirme</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <section id="hizmetler" className="section">
+      <section className="section" id="hizmetler">
         <div className="container">
-          <div className="section-top">
-            <div className="section-label">Hizmetlerimiz</div>
-            <h2>Dükkanında ne varsa sitede de o hissi verelim.</h2>
+          <div className="section-head">
+            <span>HİZMETLERİMİZ</span>
+            <h2>Güçlü, sade ve güven veren hizmet yapısı</h2>
           </div>
 
-          <div className="grid-3">
-            <div className="info-card">
-              <div className="mini-badge">Gözde Motor</div>
-              <h3>Yedek Parça Satışı</h3>
-              <p>
-                En çok ihtiyaç duyulan parçalardan günlük tamir ürünlerine kadar
-                güvenilir satış.
-              </p>
-            </div>
-
-            <div className="info-card">
-              <div className="mini-badge">Gözde Motor</div>
-              <h3>Aksesuar ve Ekipman</h3>
-              <p>
-                Kask, çanta, bakım ürünleri ve sürüş konforunu artıran yardımcı
-                ekipmanlar.
-              </p>
-            </div>
-
-            <div className="info-card">
-              <div className="mini-badge">Gözde Motor</div>
-              <h3>Servis & Tamir</h3>
-              <p>
-                Uygun çözüm, hızlı işlem ve esnaf işi güven. İhtiyaca göre bakım ve
-                değişim desteği.
-              </p>
-            </div>
+          <div className="grid services-grid">
+            {services.map((item) => (
+              <div className="card pro-card" key={item}>
+                <div className="card-top-line"></div>
+                <h3>{item}</h3>
+                <p>Gözde Motor güvencesiyle hızlı destek ve doğru ürün yönlendirmesi.</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section id="urunler" className="section section-dark">
+      <section className="section dark" id="urunler">
         <div className="container">
-          <div className="section-top">
-            <div className="section-label">Ürün Grupları</div>
-            <h2>En çok sorulan ve en çok satılan ürünler</h2>
-            <p className="section-desc">
-              Siteye zamanla yeni ürünler, kampanyalar ve stokta bulunan markalar da eklenebilir.
-            </p>
+          <div className="section-head">
+            <span>ÜRÜN VİTRİNİ</span>
+            <h2>En çok sorulan ürün grupları</h2>
           </div>
 
-          <div className="products-grid">
-            {productGroups.map((item) => (
-              <div key={item} className="product-card">
-                {item}
+          <div className="grid products-grid-pro">
+            {products.map((item) => (
+              <div className="card product-pro-card" key={item}>
+                <div className="product-dot"></div>
+                <h3>{item}</h3>
               </div>
             ))}
           </div>
@@ -171,148 +122,48 @@ export default function App() {
       </section>
 
       <section className="section">
-        <div className="container two-col">
-          <div className="panel">
-            <div className="section-label">Neden Biz?</div>
+        <div className="container split-wrap">
+          <div className="info-panel">
+            <span>NEDEN BİZ?</span>
             <h2>Müşterinin işini uzatmayan dükkan</h2>
-
-            <div className="small-grid">
-              {advantages.map((item) => (
-                <div key={item} className="small-card">
-                  {item}
-                </div>
+            <div className="reason-list">
+              {reasons.map((item) => (
+                <div className="reason-item" key={item}>{item}</div>
               ))}
             </div>
           </div>
 
-          <div className="panel panel-red">
-            <div className="section-label light">Markalar</div>
-            <h2>Çalışılan ve talep gören ürünler</h2>
-
-            <div className="brand-list">
-              {brands.map((brand) => (
-                <div key={brand} className="brand-pill">
-                  {brand}
-                </div>
-              ))}
+          <div className="contact-panel-pro">
+            <span>HIZLI İLETİŞİM</span>
+            <h2>Bir mesaj kadar yakınız</h2>
+            <p>Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca cevap verelim.</p>
+            <div className="contact-actions-pro">
+              <a href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum." target="_blank" rel="noreferrer" className="btn">WhatsApp</a>
+              <a href="https://instagram.com/gozdemotor" target="_blank" rel="noreferrer" className="btn btn-outline">Instagram</a>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section about-wrap">
-        <div className="container two-col about-grid">
-          <div className="panel">
-            <div className="section-label">Hakkımızda</div>
+      <section className="section section-contact" id="iletisim">
+        <div className="container contact-box-pro">
+          <div>
+            <span>İLETİŞİM</span>
             <h2>Gözde Motor</h2>
-            <p className="about-text">
-              Şuhut’ta yedek parça, aksesuar ve servis hizmetini bir arada sunan
-              Gözde Motor; güvenilir ürün, hızlı çözüm ve samimi esnaf anlayışıyla
-              hizmet verir. Amacımız müşterinin ihtiyacını doğru parça, doğru
-              yönlendirme ve temiz hizmetle karşılamak.
-            </p>
+            <p>Şuhut / Afyon</p>
+            <p>0543 718 20 17</p>
+            <p>@gozdemotor</p>
           </div>
-
-          <div className="panel panel-red">
-            <div className="section-label light">Hızlı Ulaşım</div>
-            <h2>WhatsApp Destek</h2>
-            <p className="about-text">
-              Parça sormak, fiyat almak veya ürün fotoğrafı istemek için direkt
-              WhatsApp’tan ulaşabilirsiniz.
-            </p>
-
-            <a
-              className="btn btn-primary"
-              href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20yedek%20par%C3%A7a%20bilgisi%20almak%20istiyorum."
-              target="_blank"
-              rel="noreferrer"
-            >
-              WhatsApp'tan Yaz
-            </a>
+          <div className="contact-right-pro">
+            <div className="mini-note">Motoruna ne lazımsa burada.</div>
+            <a href="tel:05437182017" className="btn">Şimdi Ara</a>
           </div>
         </div>
       </section>
 
-      <section id="iletisim" className="section">
-        <div className="container two-col">
-          <div className="panel">
-            <div className="section-label">İletişim</div>
-            <h2>Bize kolayca ulaş</h2>
-
-            <div className="contact-list">
-              <div>
-                <div className="contact-label">Çalışma Şekli</div>
-                <div className="contact-value">Mağaza satış • Servis • Kargo</div>
-              </div>
-
-              <div>
-                <div className="contact-label">Telefon</div>
-                <div className="contact-value">0543 718 20 17</div>
-              </div>
-
-              <div>
-                <div className="contact-label">Konum</div>
-                <div className="contact-value">Şuhut / Afyon</div>
-              </div>
-
-              <div>
-                <div className="contact-label">Instagram</div>
-                <div className="contact-value">@gozdemotor</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="panel panel-red">
-            <div className="section-label light">Hazır Metin</div>
-            <h2>WhatsApp için kısa mesaj</h2>
-
-            <div className="message-box">
-              Merhaba, Gözde Motor’dan bilgi almak istiyorum. Yedek parça /
-              aksesuar / servis konusunda yardımcı olabilir misiniz?
-            </div>
-
-            <div className="contact-buttons">
-              <a
-                className="btn btn-white"
-                href="https://instagram.com/gozdemotor"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Instagram’a Git
-              </a>
-
-              <a
-                className="btn btn-primary"
-                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-                target="_blank"
-                rel="noreferrer"
-              >
-                WhatsApp'a Git
-              </a>
-
-              <a className="btn btn-secondary" href="tel:05437182017">
-                Telefonla Ara
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <a
-        className="floating-btn"
-        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-        target="_blank"
-        rel="noreferrer"
-      >
+      <a href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum." className="whatsapp" target="_blank" rel="noreferrer">
         WhatsApp
       </a>
-
-      <footer className="footer">
-        <div className="container footer-inner">
-          <div>© 2026 Gözde Motor • Yedek Parça • Aksesuar • Servis</div>
-          <div>Şuhut / Afyon</div>
-        </div>
-      </footer>
     </div>
   );
 }
