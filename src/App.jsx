@@ -139,7 +139,7 @@ export default function App() {
             <p>Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca cevap verelim.</p>
             <div className="contact-actions-pro">
               <a href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum." target="_blank" rel="noreferrer" className="btn">WhatsApp</a>
-              <a href="https://instagram.com/gozdemotor" target="_blank" rel="noreferrer" className="btn btn-outline">Instagram</a>
+              <a href="https://instagram.com/gozdemotortr" target="_blank" rel="noreferrer" className="btn btn-outline">Instagram</a>
             </div>
           </div>
         </div>
