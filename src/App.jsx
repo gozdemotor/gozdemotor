@@ -1,51 +1,232 @@
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabase";
+import { Routes, Route, Navigate, Link } from "react-router-dom";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import "./App.css";
 
-export default function AdminDashboard() {
-  const navigate = useNavigate();
+function HomePage() {
+  const products = [
+    { name: "Motor Yağları", img: "/yag.jpg" },
+    { name: "Zincir Setleri", img: "/zincir.jpg" },
+    { name: "Kask ve Çanta", img: "/kask.jpg" },
+    { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
+  ];
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/admin/login");
-  };
+  const features = [
+    "Hızlı parça temini",
+    "Esnaf işi güven",
+    "Şuhut içi kolay ulaşım",
+    "Türkiye geneli gönderim",
+  ];
 
   return (
-    <div className="admin-dashboard-page">
-      <div className="admin-dashboard-wrap">
-        <div className="admin-dashboard-header">
-          <div>
-            <div className="admin-panel-badge">GÖZDE MOTOR ADMIN</div>
-            <h1>Admin Panel</h1>
-            <p>Giriş başarılı. Şimdi buraya ürün yönetimi bağlayacağız.</p>
+    <div className="site">
+      <header className="header">
+        <div className="container header-inner">
+          <a href="#anasayfa" className="brand">
+            <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
+          </a>
+
+          <nav className="nav">
+            <a href="#anasayfa">Ana Sayfa</a>
+            <a href="#urunler">Ürünler</a>
+            <a href="#avantajlar">Neden Biz</a>
+            <a href="#iletisim">İletişim</a>
+            <Link to="/admin/login" className="nav-admin-link">
+              Admin
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <section className="hero" id="anasayfa">
+        <div className="hero-overlay"></div>
+        <div className="hero-bg-logo"></div>
+
+        <div className="container hero-grid">
+          <div className="hero-left">
+            <div className="hero-badge">Şuhut / Afyon</div>
+
+            <h1>
+              Motoruna ne lazımsa <span>Gözde Motor</span>'da.
+            </h1>
+
+            <p>
+              Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
+              motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
+            </p>
+
+            <div className="hero-actions">
+              <a
+                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20par%C3%A7a%20sormak%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-primary"
+              >
+                WhatsApp'tan Yaz
+              </a>
+
+              <a href="tel:05437182017" className="btn btn-secondary">
+                Hemen Ara
+              </a>
+
+              <Link to="/admin/login" className="btn btn-secondary">
+                Admin Girişi
+              </Link>
+            </div>
+
+            <div className="stats">
+              <div className="stat-card">
+                <strong>Parça</strong>
+                <span>Geniş ürün grubu</span>
+              </div>
+              <div className="stat-card">
+                <strong>Servis</strong>
+                <span>Pratik çözüm</span>
+              </div>
+              <div className="stat-card">
+                <strong>Kargo</strong>
+                <span>Türkiye geneli</span>
+              </div>
+            </div>
           </div>
 
-          <div className="admin-dashboard-actions">
-            <button className="admin-secondary-btn" onClick={() => navigate("/")}>
-              Siteye Dön
-            </button>
-            <button className="admin-primary-btn" onClick={handleLogout}>
-              Çıkış Yap
-            </button>
+          <div className="hero-card">
+            <div className="panel-label">GÖZDE MOTOR</div>
+            <h2>Motor & Yedek Parça Merkezi</h2>
+            <p>
+              WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
+              sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
+            </p>
+
+            <ul className="hero-list">
+              <li>Motor yedek parça satışı</li>
+              <li>Aksesuar ve ekipman ürünleri</li>
+              <li>Servis ve tamir desteği</li>
+              <li>Hızlı müşteri iletişimi</li>
+            </ul>
           </div>
         </div>
+      </section>
 
-        <div className="admin-grid">
-          <div className="admin-box">
-            <h2>Durum</h2>
-            <p>Admin girişi aktif. Yetkili kullanıcılar buraya erişebilir.</p>
+      <section className="section" id="urunler">
+        <div className="container">
+          <div className="section-top">
+            <span className="section-mini">ÜRÜN VİTRİNİ</span>
+            <h2>En çok sorulan ürün grupları</h2>
           </div>
 
-          <div className="admin-box">
-            <h2>Sıradaki Adım</h2>
-            <p>Ürün ekleme, silme ve güncelleme ekranını bu panelin içine bağlayacağız.</p>
-          </div>
-
-          <div className="admin-box">
-            <h2>Supabase</h2>
-            <p>admins tablosunda olan kullanıcılar paneli açabilecek.</p>
+          <div className="product-grid">
+            {products.map((item) => (
+              <div className="product-card" key={item.name}>
+                <img src={item.img} alt={item.name} className="product-img" />
+                <div className="product-content">
+                  <h3>{item.name}</h3>
+                  <p>Gözde Motor güvencesiyle satış ve hızlı destek.</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="section section-dark" id="avantajlar">
+        <div className="container split-grid">
+          <div className="info-box">
+            <span className="section-mini">NEDEN BİZ?</span>
+            <h2>Müşterinin işini uzatmayan dükkan</h2>
+
+            <div className="feature-list">
+              {features.map((item) => (
+                <div className="feature-item" key={item}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="contact-box">
+            <span className="section-mini">HIZLI İLETİŞİM</span>
+            <h2>Bir mesaj kadar yakınız</h2>
+            <p>
+              Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca dönüş yapalım.
+            </p>
+
+            <div className="contact-buttons">
+              <a
+                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-primary"
+              >
+                WhatsApp
+              </a>
+
+              <a
+                href="https://instagram.com/gozdemotortr"
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-secondary"
+              >
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="iletisim">
+        <div className="container contact-main">
+          <div className="contact-left">
+            <span className="section-mini">İLETİŞİM</span>
+            <h2>Gözde Motor</h2>
+
+            <div className="contact-lines">
+              <p>📍 Şuhut / Afyon</p>
+              <p>📞 0543 718 20 17</p>
+              <p>📷 @gozdemotortr</p>
+            </div>
+          </div>
+
+          <div className="contact-right">
+            <iframe
+              src="https://www.google.com/maps?q=Şuhut%20Afyon&output=embed"
+              width="100%"
+              height="250"
+              style={{ border: 0, borderRadius: "18px" }}
+              loading="lazy"
+              title="Gözde Motor Konum"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <a
+        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+      >
+        WhatsApp
+      </a>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedAdminRoute>
+            <AdminDashboard />
+          </ProtectedAdminRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
