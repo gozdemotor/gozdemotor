@@ -4,467 +4,102 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  background: #050505;
-  color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
+  background: black;
+  font-family: Arial, sans-serif;
+  color: white;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
+/* 🔥 ARKA PLAN EKLENDİ */
 .site {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, rgba(255, 0, 0, 0.10), transparent 25%),
-    radial-gradient(circle at bottom left, rgba(255, 0, 0, 0.08), transparent 22%),
-    #050505;
-}
+    linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)),
+    url("/bg.jpg");
 
-.container {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 20px;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* HEADER */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(5, 5, 5, 0.92);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .header-inner {
-  min-height: 94px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-}
-
-.brand {
-  display: flex;
   align-items: center;
 }
 
 .brand-logo {
-  width: 240px;
-  max-width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
+  width: 180px;
 }
 
+/* NAV */
 .nav {
   display: flex;
-  gap: 24px;
+  gap: 25px;
 }
 
 .nav a {
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 15px;
-  transition: 0.25s;
+  color: white;
+  text-decoration: none;
+  opacity: 0.8;
 }
 
 .nav a:hover {
-  color: #ff3b3b;
+  color: red;
 }
 
 /* HERO */
 .hero {
-  position: relative;
-  overflow: hidden;
-  padding: 110px 0 80px;
-}
-
-.hero-bg-logo {
-  position: absolute;
-  inset: 0;
-  background: url("/logo.png") center center / 900px no-repeat;
-  opacity: 0.05;
-  pointer-events: none;
-  filter: saturate(1.1);
-}
-
-.hero-grid {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 32px;
-  align-items: center;
-}
-
-.hero-left {
-  max-width: 700px;
-}
-
-.hero-badge {
-  display: inline-block;
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 59, 59, 0.35);
-  background: rgba(255, 0, 0, 0.08);
-  color: #ff9e9e;
-  font-size: 13px;
-  margin-bottom: 18px;
+  padding: 120px 20px;
+  text-align: center;
 }
 
 .hero h1 {
-  font-size: 58px;
-  font-weight: 900;
-  line-height: 1.08;
+  font-size: 55px;
 }
 
-.hero h1 span {
-  color: #ff2d2d;
+.hero span {
+  color: red;
 }
 
 .hero p {
   margin-top: 20px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 18px;
-  line-height: 1.8;
-  max-width: 650px;
+  opacity: 0.7;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* BUTON */
+.buttons {
   margin-top: 30px;
 }
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50px;
-  padding: 0 24px;
-  border-radius: 14px;
-  font-weight: 700;
-  transition: 0.25s;
+  padding: 12px 25px;
+  border-radius: 10px;
+  margin: 5px;
+  text-decoration: none;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #ff2a2a, #b80000);
-  color: white;
-  box-shadow: 0 10px 25px rgba(255, 0, 0, 0.22);
-}
-
-.btn-secondary {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+.primary {
+  background: red;
   color: white;
 }
 
-.btn-secondary:hover {
-  border-color: rgba(255, 0, 0, 0.4);
+.secondary {
+  border: 1px solid white;
 }
 
-.stats {
-  margin-top: 32px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  max-width: 640px;
-}
-
-.stat-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: 22px 14px;
-  text-align: center;
-}
-
-.stat-card strong {
-  display: block;
-  color: #ff2d2d;
-  font-size: 28px;
-  font-weight: 900;
-}
-
-.stat-card span {
-  display: block;
-  margin-top: 6px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.62);
-}
-
-.hero-card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.025));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 28px;
-  padding: 30px;
-  box-shadow: 0 0 40px rgba(255, 0, 0, 0.09);
-}
-
-.panel-label {
-  color: #ff5353;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.hero-card h2 {
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.hero-card p {
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 15px;
-  line-height: 1.75;
-}
-
-.hero-list {
-  margin-top: 18px;
-  padding-left: 18px;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.hero-list li {
-  margin-bottom: 10px;
-}
-
-/* SECTION */
-.section {
-  padding: 82px 0;
-}
-
-.section-dark {
-  background: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.section-top {
-  margin-bottom: 26px;
-}
-
-.section-mini {
-  color: #ff5858;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-weight: 700;
-}
-
-.section h2 {
-  margin-top: 10px;
-  font-size: 40px;
-  line-height: 1.2;
-  font-weight: 900;
-}
-
-/* PRODUCTS */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-top: 28px;
-}
-
-.product-card {
-  overflow: hidden;
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  transition: 0.28s;
-}
-
-.product-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 0, 0, 0.45);
-  box-shadow: 0 15px 35px rgba(255, 0, 0, 0.15);
-}
-
-.product-img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  display: block;
-}
-
-.product-content {
-  padding: 18px;
-}
-
-.product-content h3 {
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.product-content p {
-  margin-top: 8px;
-  color: rgba(255, 255, 255, 0.66);
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-/* SPLIT */
-.split-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.info-box,
-.contact-box,
-.contact-main {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-}
-
-.info-box,
-.contact-box {
-  padding: 30px;
-}
-
-.info-box h2,
-.contact-box h2 {
-  margin-top: 10px;
-  font-size: 34px;
-  font-weight: 900;
-}
-
-.contact-box p {
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.8;
-}
-
-.feature-list {
-  margin-top: 20px;
-  display: grid;
-  gap: 12px;
-}
-
-.feature-item {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 16px 18px;
-  border-radius: 16px;
-  font-weight: 700;
-}
-
-.contact-buttons {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 22px;
-}
-
-/* CONTACT */
-.contact-main {
-  padding: 26px;
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 18px;
-  align-items: center;
-}
-
-.contact-left h2 {
-  margin-top: 10px;
-  font-size: 38px;
-  font-weight: 900;
-}
-
-.contact-lines {
-  margin-top: 18px;
-  display: grid;
-  gap: 10px;
-}
-
-.contact-lines p {
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-/* FLOATING BUTTON */
-.floating-whatsapp {
+/* FLOAT BUTTON */
+.whatsapp {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
-  z-index: 999;
-  background: linear-gradient(135deg, #ff2a2a, #ba0000);
-  color: white;
-  padding: 14px 20px;
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 0 12px 30px rgba(255, 0, 0, 0.28);
-}
-
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .hero-grid,
-  .split-grid,
-  .contact-main {
-    grid-template-columns: 1fr;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .hero h1 {
-    font-size: 46px;
-  }
-
-  .brand-logo {
-    width: 200px;
-  }
-}
-
-@media (max-width: 780px) {
-  .nav {
-    display: none;
-  }
-
-  .product-grid,
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .hero {
-    padding: 70px 0 50px;
-  }
-
-  .hero h1 {
-    font-size: 34px;
-  }
-
-  .section h2,
-  .info-box h2,
-  .contact-box h2,
-  .contact-left h2 {
-    font-size: 28px;
-  }
-
-  .brand-logo {
-    width: 170px;
-  }
-
-  .product-img {
-    height: 190px;
-  }
+  right: 20px;
+  bottom: 20px;
+  background: red;
+  padding: 12px 20px;
+  border-radius: 50px;
 }
