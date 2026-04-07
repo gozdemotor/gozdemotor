@@ -28,6 +28,7 @@ a {
 }
 
 .container {
+  width: 100%;
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 20px;
@@ -38,13 +39,13 @@ a {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(5, 5, 5, 0.9);
+  background: rgba(5, 5, 5, 0.92);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .header-inner {
-  min-height: 82px;
+  min-height: 88px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,24 +59,24 @@ a {
 }
 
 .brand-logo {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.04);
   padding: 6px;
 }
 
 .brand-title {
   color: #ff2b2b;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
   letter-spacing: 1px;
 }
 
 .brand-sub {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.62);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-top: 4px;
@@ -88,7 +89,7 @@ a {
 
 .nav a {
   color: rgba(255, 255, 255, 0.82);
-  font-size: 14px;
+  font-size: 15px;
   transition: 0.25s;
 }
 
@@ -100,13 +101,13 @@ a {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 90px 0 70px;
+  padding: 100px 0 80px;
 }
 
 .hero-bg-logo {
   position: absolute;
   inset: 0;
-  background: url("/logo.png") center center / 480px no-repeat;
+  background: url("/logo.png") center center / 520px no-repeat;
   opacity: 0.06;
   pointer-events: none;
 }
@@ -116,17 +117,17 @@ a {
   z-index: 2;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 28px;
+  gap: 32px;
   align-items: center;
 }
 
 .hero-left {
-  max-width: 680px;
+  max-width: 700px;
 }
 
 .hero-badge {
   display: inline-block;
-  padding: 8px 14px;
+  padding: 9px 16px;
   border-radius: 999px;
   border: 1px solid rgba(255, 59, 59, 0.35);
   background: rgba(255, 0, 0, 0.08);
@@ -136,7 +137,7 @@ a {
 }
 
 .hero h1 {
-  font-size: 58px;
+  font-size: 60px;
   font-weight: 900;
   line-height: 1.08;
 }
@@ -146,26 +147,26 @@ a {
 }
 
 .hero p {
-  margin-top: 18px;
+  margin-top: 20px;
   color: rgba(255, 255, 255, 0.72);
   font-size: 18px;
   line-height: 1.8;
-  max-width: 640px;
+  max-width: 650px;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 28px;
+  margin-top: 30px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 22px;
+  min-height: 50px;
+  padding: 0 24px;
   border-radius: 14px;
   font-weight: 700;
   transition: 0.25s;
@@ -192,18 +193,18 @@ a {
 }
 
 .stats {
-  margin-top: 30px;
+  margin-top: 32px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  max-width: 620px;
+  max-width: 640px;
 }
 
 .stat-card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  padding: 20px 14px;
+  padding: 22px 14px;
   text-align: center;
 }
 
@@ -225,7 +226,7 @@ a {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.025));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 28px;
-  padding: 28px;
+  padding: 30px;
   box-shadow: 0 0 40px rgba(255, 0, 0, 0.09);
 }
 
@@ -238,7 +239,7 @@ a {
 }
 
 .hero-card h2 {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -262,7 +263,7 @@ a {
 
 /* SECTION */
 .section {
-  padding: 78px 0;
+  padding: 82px 0;
 }
 
 .section-dark {
@@ -272,7 +273,7 @@ a {
 }
 
 .section-top {
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .section-mini {
@@ -285,7 +286,7 @@ a {
 
 .section h2 {
   margin-top: 10px;
-  font-size: 38px;
+  font-size: 40px;
   line-height: 1.2;
   font-weight: 900;
 }
@@ -352,13 +353,13 @@ a {
 
 .info-box,
 .contact-box {
-  padding: 28px;
+  padding: 30px;
 }
 
 .info-box h2,
 .contact-box h2 {
   margin-top: 10px;
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 900;
 }
 
@@ -391,7 +392,7 @@ a {
 
 /* CONTACT */
 .contact-main {
-  padding: 24px;
+  padding: 26px;
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 18px;
@@ -400,7 +401,7 @@ a {
 
 .contact-left h2 {
   margin-top: 10px;
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 900;
 }
 
@@ -433,9 +434,12 @@ a {
 @media (max-width: 1024px) {
   .hero-grid,
   .split-grid,
-  .contact-main,
+  .contact-main {
+    grid-template-columns: 1fr;
+  }
+
   .product-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .hero h1 {
@@ -448,9 +452,6 @@ a {
     display: none;
   }
 
-  .hero-grid,
-  .split-grid,
-  .contact-main,
   .product-grid,
   .stats {
     grid-template-columns: 1fr;
