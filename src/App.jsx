@@ -19,10 +19,6 @@ export default function App() {
         <div className="container header-inner">
           <a href="#anasayfa" className="brand">
             <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
-            <div>
-              <div className="brand-title">GÖZDE MOTOR</div>
-              <div className="brand-sub">Yedek Parça • Aksesuar • Servis</div>
-            </div>
           </a>
 
           <nav className="nav">
@@ -36,6 +32,7 @@ export default function App() {
 
       <section className="hero" id="anasayfa">
         <div className="hero-bg-logo"></div>
+
         <div className="container hero-grid">
           <div className="hero-left">
             <div className="hero-badge">Şuhut / Afyon</div>
@@ -44,7 +41,7 @@ export default function App() {
             </h1>
             <p>
               Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
-              motosiklet mağazası. Güven veren hizmet, hızlı iletişim ve güçlü vitrin.
+              motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
             </p>
 
             <div className="hero-actions">
@@ -79,17 +76,17 @@ export default function App() {
           </div>
 
           <div className="hero-card">
-            <div className="panel-label">GM PRO VİTRİN</div>
-            <h2>Yedek Parça ve Aksesuar Merkezi</h2>
+            <div className="panel-label">GÖZDE MOTOR</div>
+            <h2>Motor & Yedek Parça Merkezi</h2>
             <p>
-              Instagram, WhatsApp ve mağaza satışını bir araya getiren profesyonel
-              vitrin sitesi.
+              WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
+              sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
             </p>
 
             <ul className="hero-list">
               <li>Motor yedek parça satışı</li>
               <li>Aksesuar ve ekipman ürünleri</li>
-              <li>Servis & tamir desteği</li>
+              <li>Servis ve tamir desteği</li>
               <li>Hızlı müşteri iletişimi</li>
             </ul>
           </div>
@@ -122,6 +119,7 @@ export default function App() {
           <div className="info-box">
             <span className="section-mini">NEDEN BİZ?</span>
             <h2>Müşterinin işini uzatmayan dükkan</h2>
+
             <div className="feature-list">
               {features.map((item) => (
                 <div className="feature-item" key={item}>
@@ -166,6 +164,7 @@ export default function App() {
           <div className="contact-left">
             <span className="section-mini">İLETİŞİM</span>
             <h2>Gözde Motor</h2>
+
             <div className="contact-lines">
               <p>📍 Şuhut / Afyon</p>
               <p>📞 0543 718 20 17</p>
