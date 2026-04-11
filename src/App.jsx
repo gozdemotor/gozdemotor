@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AdminLogin from "./pages/AdminLogin";
@@ -13,6 +13,7 @@ function HomePage() {
     { name: "Kask ve Çanta", img: "/kask.jpg" },
     { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
   ]);
+  const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   const features = [
     "Hızlı parça temini",
@@ -33,7 +34,8 @@ function HomePage() {
           id: item.id,
           name: item.name,
           img: item.image_url || "/yag.jpg",
-          description: item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          description:
+            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
           price: item.price,
           stock: item.stock,
           category: item.category,
@@ -45,6 +47,19 @@ function HomePage() {
 
     getProducts();
   }, []);
+
+  const categories = useMemo(() => {
+    const dynamicCategories = products
+      .map((item) => item.category)
+      .filter((item) => item && item.trim() !== "");
+
+    return ["Tümü", ...new Set(dynamicCategories)];
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "Tümü") return products;
+    return products.filter((item) => item.category === selectedCategory);
+  }, [products, selectedCategory]);
 
   return (
     <div className="site">
@@ -143,29 +158,84 @@ function HomePage() {
             <h2>En çok sorulan ürün grupları</h2>
           </div>
 
-          <div className="product-grid">
-  {products.map((item, index) => (
-    <div className="product-card" key={item.id || item.name || index}>
-      <img src={item.img} alt={item.name} className="product-img" />
-      <div className="product-content">
-        <h3>{item.name}</h3>
-        <p>{item.description || "Gözde Motor güvencesiyle satış ve hızlı destek."}</p>
+          <div className="products-layout">
+            <aside className="category-sidebar">
+              <h3>Kategoriler</h3>
 
-        {item.price !== undefined && item.price !== null && item.price !== "" ? (
-          <p style={{ marginTop: "10px", fontWeight: "800", color: "#ffffff" }}>
-            Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
-          </p>
-        ) : null}
+              <div className="category-list">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    className={
+                      selectedCategory === category
+                        ? "category-btn active"
+                        : "category-btn"
+                    }
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </aside>
 
-        {item.stock !== undefined && item.stock !== null && item.stock !== "" ? (
-          <p style={{ marginTop: "6px", color: "rgba(255,255,255,0.78)" }}>
-            Stok: {item.stock}
-          </p>
-        ) : null}
-      </div>
-    </div>
-  ))}
-</div>
+            <div className="products-content">
+              <div className="product-grid">
+                {filteredProducts.map((item, index) => (
+                  <div className="product-card" key={item.id || item.name || index}>
+                    <img src={item.img} alt={item.name} className="product-img" />
+                    <div className="product-content">
+                      <h3>{item.name}</h3>
+                      <p>
+                        {item.description ||
+                          "Gözde Motor güvencesiyle satış ve hızlı destek."}
+                      </p>
+
+                      {item.price !== undefined &&
+                      item.price !== null &&
+                      item.price !== "" ? (
+                        <p
+                          style={{
+                            marginTop: "10px",
+                            fontWeight: "800",
+                            color: "#ffffff",
+                          }}
+                        >
+                          Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                        </p>
+                      ) : null}
+
+                      {item.stock !== undefined &&
+                      item.stock !== null &&
+                      item.stock !== "" ? (
+                        <p
+                          style={{
+                            marginTop: "6px",
+                            color: "rgba(255,255,255,0.78)",
+                          }}
+                        >
+                          Stok: {item.stock}
+                        </p>
+                      ) : null}
+
+                      {item.category ? (
+                        <p
+                          style={{
+                            marginTop: "6px",
+                            color: "#ff8a8a",
+                            fontSize: "13px",
+                            fontWeight: "700",
+                          }}
+                        >
+                          Kategori: {item.category}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
