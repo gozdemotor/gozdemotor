@@ -1517,3 +1517,25 @@
     bottom: 16px;
   }
 }
+.product-card-tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.product-card-tilt .product-image-wrap,
+.product-card-tilt .product-content,
+.product-card-tilt .product-card-actions {
+  transform: translateZ(14px);
+}
+
+@media (max-width: 900px) {
+  .product-card-tilt {
+    transform: none !important;
+  }
+
+  .product-card-tilt .product-image-wrap,
+  .product-card-tilt .product-content,
+  .product-card-tilt .product-card-actions {
+    transform: none;
+  }
+}

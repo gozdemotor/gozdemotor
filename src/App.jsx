@@ -145,9 +145,35 @@ function ProductCard({ item, index = 0, addToCart }) {
       )
     : 0;
 
+  const cardRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current || window.innerWidth <= 900) return;
+
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateY = ((x / rect.width) - 0.5) * 10;
+    const rotateX = ((y / rect.height) - 0.5) * -10;
+
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform =
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+  };
+
   return (
     <Reveal delay={80 + index * 70}>
-      <div className="product-card animated-product-card">
+      <div
+        ref={cardRef}
+        className="product-card animated-product-card product-card-tilt"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         {hasDiscount ? (
           <div className="discount-badge">%{discountPercent} İndirim</div>
         ) : null}
