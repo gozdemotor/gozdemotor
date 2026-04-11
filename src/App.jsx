@@ -1,16 +1,18 @@
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import { supabase } from "./lib/supabase";
 import "./App.css";
 
 function HomePage() {
-  const products = [
+  const [products, setProducts] = useState([
     { name: "Motor Yağları", img: "/yag.jpg" },
     { name: "Zincir Setleri", img: "/zincir.jpg" },
     { name: "Kask ve Çanta", img: "/kask.jpg" },
     { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
-  ];
+  ]);
 
   const features = [
     "Hızlı parça temini",
@@ -18,6 +20,31 @@ function HomePage() {
     "Şuhut içi kolay ulaşım",
     "Türkiye geneli gönderim",
   ];
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const formattedProducts = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          img: item.image_url || "/yag.jpg",
+          description: item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          price: item.price,
+          stock: item.stock,
+          category: item.category,
+        }));
+
+        setProducts(formattedProducts);
+      }
+    };
+
+    getProducts();
+  }, []);
 
   return (
     <div className="site">
@@ -117,12 +144,12 @@ function HomePage() {
           </div>
 
           <div className="product-grid">
-            {products.map((item) => (
-              <div className="product-card" key={item.name}>
+            {products.map((item, index) => (
+              <div className="product-card" key={item.id || item.name || index}>
                 <img src={item.img} alt={item.name} className="product-img" />
                 <div className="product-content">
                   <h3>{item.name}</h3>
-                  <p>Gözde Motor güvencesiyle satış ve hızlı destek.</p>
+                  <p>{item.description || "Gözde Motor güvencesiyle satış ve hızlı destek."}</p>
                 </div>
               </div>
             ))}
