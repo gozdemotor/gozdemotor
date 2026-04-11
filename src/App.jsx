@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Routes,
   Route,
@@ -116,9 +116,14 @@ function SiteHeader() {
   );
 }
 
-function FloatingCart({ cartCount }) {
+function FloatingCart({ cartCount, cartRef }) {
   return (
-    <Link to="/sepet" className="floating-cart" aria-label="Sepet">
+    <Link
+      to="/sepet"
+      className="floating-cart"
+      aria-label="Sepet"
+      ref={cartRef}
+    >
       <span className="floating-cart-icon">🛒</span>
       <span className="floating-cart-text">Sepet</span>
       {cartCount > 0 ? (
@@ -202,7 +207,7 @@ function ProductCard({ item, index = 0, addToCart }) {
           <button
             type="button"
             className="product-cart-btn"
-            onClick={() => addToCart(item)}
+            onClick={(e) => addToCart(item, e.currentTarget)}
           >
             Sepete Ekle
           </button>
@@ -282,7 +287,7 @@ function ProductsSection({
   );
 }
 
-function HomePage({ products, addToCart, cartCount }) {
+function HomePage({ products, addToCart, cartCount, cartRef }) {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   const features = [
@@ -466,7 +471,7 @@ function HomePage({ products, addToCart, cartCount }) {
         </div>
       </section>
 
-      <FloatingCart cartCount={cartCount} />
+      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
 
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
@@ -480,7 +485,7 @@ function HomePage({ products, addToCart, cartCount }) {
   );
 }
 
-function ProductsPage({ products, addToCart, cartCount }) {
+function ProductsPage({ products, addToCart, cartCount, cartRef }) {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   return (
@@ -507,7 +512,7 @@ function ProductsPage({ products, addToCart, cartCount }) {
         addToCart={addToCart}
       />
 
-      <FloatingCart cartCount={cartCount} />
+      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
 
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
@@ -521,7 +526,7 @@ function ProductsPage({ products, addToCart, cartCount }) {
   );
 }
 
-function ProductDetailPage({ products, addToCart, cartCount }) {
+function ProductDetailPage({ products, addToCart, cartCount, cartRef }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -590,7 +595,7 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
                     <img
                       src={product.img}
                       alt={product.name}
-                      className="product-detail-image"
+                      className="product-img product-detail-image"
                     />
                   </div>
 
@@ -636,7 +641,7 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
                     <div className="detail-actions">
                       <button
                         className="btn btn-primary"
-                        onClick={() => addToCart(product)}
+                        onClick={(e) => addToCart(product, e.currentTarget)}
                       >
                         Sepete Ekle
                       </button>
@@ -689,7 +694,7 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
         </div>
       </section>
 
-      <FloatingCart cartCount={cartCount} />
+      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
 
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
@@ -857,6 +862,8 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const cartRef = useRef(null);
+
   useEffect(() => {
     const getProducts = async () => {
       const { data, error } = await supabase
@@ -898,7 +905,64 @@ export default function App() {
     localStorage.setItem("gozde-motor-cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
+  const animateToCart = (triggerElement) => {
+    if (!triggerElement || !cartRef.current) return;
+
+    const productCard = triggerElement.closest(".product-card");
+    const detailBox = triggerElement.closest(".product-detail-box");
+
+    const sourceImage =
+      productCard?.querySelector(".product-img") ||
+      detailBox?.querySelector(".product-detail-image");
+
+    if (!sourceImage) return;
+
+    const sourceRect = sourceImage.getBoundingClientRect();
+    const cartRect = cartRef.current.getBoundingClientRect();
+
+    const flyingImage = sourceImage.cloneNode(true);
+    flyingImage.classList.add("flying-cart-image");
+
+    flyingImage.style.position = "fixed";
+    flyingImage.style.left = `${sourceRect.left}px`;
+    flyingImage.style.top = `${sourceRect.top}px`;
+    flyingImage.style.width = `${sourceRect.width}px`;
+    flyingImage.style.height = `${sourceRect.height}px`;
+    flyingImage.style.borderRadius = "18px";
+    flyingImage.style.objectFit = "cover";
+    flyingImage.style.pointerEvents = "none";
+    flyingImage.style.zIndex = "9999";
+    flyingImage.style.transition =
+      "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease, width 0.8s ease, height 0.8s ease, left 0.8s ease, top 0.8s ease, border-radius 0.8s ease";
+    flyingImage.style.boxShadow = "0 16px 40px rgba(0,0,0,0.35)";
+
+    document.body.appendChild(flyingImage);
+
+    const targetLeft = cartRect.left + cartRect.width / 2 - 20;
+    const targetTop = cartRect.top + cartRect.height / 2 - 20;
+
+    requestAnimationFrame(() => {
+      flyingImage.style.left = `${targetLeft}px`;
+      flyingImage.style.top = `${targetTop}px`;
+      flyingImage.style.width = "40px";
+      flyingImage.style.height = "40px";
+      flyingImage.style.borderRadius = "999px";
+      flyingImage.style.opacity = "0.25";
+      flyingImage.style.transform = "scale(0.35) rotate(12deg)";
+    });
+
+    setTimeout(() => {
+      flyingImage.remove();
+      cartRef.current?.classList.add("cart-bump");
+      setTimeout(() => {
+        cartRef.current?.classList.remove("cart-bump");
+      }, 450);
+    }, 820);
+  };
+
+  const addToCart = (product, triggerElement = null) => {
+    animateToCart(triggerElement);
+
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
 
@@ -951,6 +1015,7 @@ export default function App() {
             products={products}
             addToCart={addToCart}
             cartCount={cartCount}
+            cartRef={cartRef}
           />
         }
       />
@@ -961,6 +1026,7 @@ export default function App() {
             products={products}
             addToCart={addToCart}
             cartCount={cartCount}
+            cartRef={cartRef}
           />
         }
       />
@@ -971,6 +1037,7 @@ export default function App() {
             products={products}
             addToCart={addToCart}
             cartCount={cartCount}
+            cartRef={cartRef}
           />
         }
       />
