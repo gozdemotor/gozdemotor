@@ -98,30 +98,6 @@ function buildWhatsappCartMessage(cartItems) {
 }
 
 function SiteHeader() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) return;
-
-      const { data } = await supabase
-        .from("admins")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (data) {
-        setIsAdmin(true);
-      }
-    };
-
-    checkAdmin();
-  }, []);
-
   return (
     <header className="header">
       <div className="container header-inner">
@@ -134,13 +110,9 @@ function SiteHeader() {
           <Link to="/urunler">Ürünler</Link>
           <a href="/#avantajlar">Neden Biz</a>
           <a href="/#iletisim">İletişim</a>
-
-          {/* SADECE ADMIN İSE GÖRÜNÜR */}
-          {isAdmin && (
-            <Link to="/admin" className="nav-admin-link">
-              Admin
-            </Link>
-          )}
+          <Link to="/admin/login" className="nav-admin-link">
+            Admin
+          </Link>
         </nav>
       </div>
     </header>
@@ -366,10 +338,6 @@ function HomePage({ products, addToCart, cartCount }) {
                 <a href="tel:05437182017" className="btn btn-secondary">
                   Hemen Ara
                 </a>
-
-                <Link to="/admin/login" className="btn btn-secondary">
-                  Admin Girişi
-                </Link>
               </div>
             </Reveal>
 
