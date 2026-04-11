@@ -6,6 +6,21 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { supabase } from "./lib/supabase";
 import "./App.css";
 
+function Reveal({ children, delay = 0 }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div className={visible ? "reveal reveal-show" : "reveal"}>
+      {children}
+    </div>
+  );
+}
+
 function HomePage() {
   const [products, setProducts] = useState([
     { name: "Motor Yağları", img: "/yag.jpg" },
@@ -63,6 +78,8 @@ function HomePage() {
 
   return (
     <div className="site">
+      <div className="site-ambient-glow"></div>
+
       <header className="header">
         <div className="container header-inner">
           <a href="#anasayfa" className="brand">
@@ -87,151 +104,152 @@ function HomePage() {
 
         <div className="container hero-grid">
           <div className="hero-left">
-            <div className="hero-badge">Şuhut / Afyon</div>
+            <Reveal delay={0}>
+              <div className="hero-badge">Şuhut / Afyon</div>
+            </Reveal>
 
-            <h1>
-              Motoruna ne lazımsa <span>Gözde Motor</span>'da.
-            </h1>
+            <Reveal delay={120}>
+              <h1>
+                Motoruna ne lazımsa <span>Gözde Motor</span>'da.
+              </h1>
+            </Reveal>
 
-            <p>
-              Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
-              motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
-            </p>
+            <Reveal delay={240}>
+              <p>
+                Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
+                motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
+              </p>
+            </Reveal>
 
-            <div className="hero-actions">
-              <a
-                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20par%C3%A7a%20sormak%20istiyorum."
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary"
-              >
-                WhatsApp'tan Yaz
-              </a>
+            <Reveal delay={360}>
+              <div className="hero-actions">
+                <a
+                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20par%C3%A7a%20sormak%20istiyorum."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary"
+                >
+                  WhatsApp'tan Yaz
+                </a>
 
-              <a href="tel:05437182017" className="btn btn-secondary">
-                Hemen Ara
-              </a>
+                <a href="tel:05437182017" className="btn btn-secondary">
+                  Hemen Ara
+                </a>
 
-              <Link to="/admin/login" className="btn btn-secondary">
-                Admin Girişi
-              </Link>
-            </div>
-
-            <div className="stats">
-              <div className="stat-card">
-                <strong>Parça</strong>
-                <span>Geniş ürün grubu</span>
+                <Link to="/admin/login" className="btn btn-secondary">
+                  Admin Girişi
+                </Link>
               </div>
-              <div className="stat-card">
-                <strong>Servis</strong>
-                <span>Pratik çözüm</span>
+            </Reveal>
+
+            <Reveal delay={480}>
+              <div className="stats">
+                <div className="stat-card">
+                  <strong>Parça</strong>
+                  <span>Geniş ürün grubu</span>
+                </div>
+                <div className="stat-card">
+                  <strong>Servis</strong>
+                  <span>Pratik çözüm</span>
+                </div>
+                <div className="stat-card">
+                  <strong>Kargo</strong>
+                  <span>Türkiye geneli</span>
+                </div>
               </div>
-              <div className="stat-card">
-                <strong>Kargo</strong>
-                <span>Türkiye geneli</span>
-              </div>
-            </div>
+            </Reveal>
           </div>
 
-          <div className="hero-card">
-            <div className="panel-label">GÖZDE MOTOR</div>
-            <h2>Motor & Yedek Parça Merkezi</h2>
-            <p>
-              WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
-              sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
-            </p>
+          <Reveal delay={260}>
+            <div className="hero-card">
+              <div className="panel-label">GÖZDE MOTOR</div>
+              <h2>Motor & Yedek Parça Merkezi</h2>
+              <p>
+                WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
+                sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
+              </p>
 
-            <ul className="hero-list">
-              <li>Motor yedek parça satışı</li>
-              <li>Aksesuar ve ekipman ürünleri</li>
-              <li>Servis ve tamir desteği</li>
-              <li>Hızlı müşteri iletişimi</li>
-            </ul>
-          </div>
+              <ul className="hero-list">
+                <li>Motor yedek parça satışı</li>
+                <li>Aksesuar ve ekipman ürünleri</li>
+                <li>Servis ve tamir desteği</li>
+                <li>Hızlı müşteri iletişimi</li>
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="section" id="urunler">
         <div className="container">
-          <div className="section-top">
-            <span className="section-mini">ÜRÜN VİTRİNİ</span>
-            <h2>En çok sorulan ürün grupları</h2>
-          </div>
+          <Reveal>
+            <div className="section-top">
+              <span className="section-mini">ÜRÜN VİTRİNİ</span>
+              <h2>En çok sorulan ürün grupları</h2>
+            </div>
+          </Reveal>
 
           <div className="products-layout">
-            <aside className="category-sidebar">
-              <h3>Kategoriler</h3>
+            <Reveal delay={100}>
+              <aside className="category-sidebar">
+                <h3>Kategoriler</h3>
 
-              <div className="category-list">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    className={
-                      selectedCategory === category
-                        ? "category-btn active"
-                        : "category-btn"
-                    }
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </aside>
+                <div className="category-list">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      className={
+                        selectedCategory === category
+                          ? "category-btn active"
+                          : "category-btn"
+                      }
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            </Reveal>
 
             <div className="products-content">
               <div className="product-grid">
                 {filteredProducts.map((item, index) => (
-                  <div className="product-card" key={item.id || item.name || index}>
-                    <img src={item.img} alt={item.name} className="product-img" />
-                    <div className="product-content">
-                      <h3>{item.name}</h3>
-                      <p>
-                        {item.description ||
-                          "Gözde Motor güvencesiyle satış ve hızlı destek."}
-                      </p>
+                  <Reveal key={item.id || item.name || index} delay={80 + index * 70}>
+                    <div className="product-card">
+                      <div className="product-image-wrap">
+                        <img src={item.img} alt={item.name} className="product-img" />
+                      </div>
 
-                      {item.price !== undefined &&
-                      item.price !== null &&
-                      item.price !== "" ? (
-                        <p
-                          style={{
-                            marginTop: "10px",
-                            fontWeight: "800",
-                            color: "#ffffff",
-                          }}
-                        >
-                          Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                      <div className="product-content">
+                        <h3>{item.name}</h3>
+                        <p>
+                          {item.description ||
+                            "Gözde Motor güvencesiyle satış ve hızlı destek."}
                         </p>
-                      ) : null}
 
-                      {item.stock !== undefined &&
-                      item.stock !== null &&
-                      item.stock !== "" ? (
-                        <p
-                          style={{
-                            marginTop: "6px",
-                            color: "rgba(255,255,255,0.78)",
-                          }}
-                        >
-                          Stok: {item.stock}
-                        </p>
-                      ) : null}
+                        {item.price !== undefined &&
+                        item.price !== null &&
+                        item.price !== "" ? (
+                          <p className="product-price">
+                            Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                          </p>
+                        ) : null}
 
-                      {item.category ? (
-                        <p
-                          style={{
-                            marginTop: "6px",
-                            color: "#ff8a8a",
-                            fontSize: "13px",
-                            fontWeight: "700",
-                          }}
-                        >
-                          Kategori: {item.category}
-                        </p>
-                      ) : null}
+                        {item.stock !== undefined &&
+                        item.stock !== null &&
+                        item.stock !== "" ? (
+                          <p className="product-stock">Stok: {item.stock}</p>
+                        ) : null}
+
+                        {item.category ? (
+                          <p className="product-category-inline">
+                            Kategori: {item.category}
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
+                  </Reveal>
                 ))}
               </div>
             </div>
@@ -241,72 +259,84 @@ function HomePage() {
 
       <section className="section section-dark" id="avantajlar">
         <div className="container split-grid">
-          <div className="info-box">
-            <span className="section-mini">NEDEN BİZ?</span>
-            <h2>Müşterinin işini uzatmayan dükkan</h2>
+          <Reveal delay={60}>
+            <div className="info-box">
+              <span className="section-mini">NEDEN BİZ?</span>
+              <h2>Müşterinin işini uzatmayan dükkan</h2>
 
-            <div className="feature-list">
-              {features.map((item) => (
-                <div className="feature-item" key={item}>
-                  {item}
-                </div>
-              ))}
+              <div className="feature-list">
+                {features.map((item, index) => (
+                  <div
+                    className="feature-item feature-animated"
+                    key={item}
+                    style={{ animationDelay: `${index * 0.08}s` }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="contact-box">
-            <span className="section-mini">HIZLI İLETİŞİM</span>
-            <h2>Bir mesaj kadar yakınız</h2>
-            <p>
-              Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca dönüş yapalım.
-            </p>
+          <Reveal delay={180}>
+            <div className="contact-box">
+              <span className="section-mini">HIZLI İLETİŞİM</span>
+              <h2>Bir mesaj kadar yakınız</h2>
+              <p>
+                Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca dönüş yapalım.
+              </p>
 
-            <div className="contact-buttons">
-              <a
-                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary"
-              >
-                WhatsApp
-              </a>
+              <div className="contact-buttons">
+                <a
+                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary"
+                >
+                  WhatsApp
+                </a>
 
-              <a
-                href="https://instagram.com/gozdemotortr"
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-secondary"
-              >
-                Instagram
-              </a>
+                <a
+                  href="https://instagram.com/gozdemotortr"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-secondary"
+                >
+                  Instagram
+                </a>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="section" id="iletisim">
         <div className="container contact-main">
-          <div className="contact-left">
-            <span className="section-mini">İLETİŞİM</span>
-            <h2>Gözde Motor</h2>
+          <Reveal delay={60}>
+            <div className="contact-left">
+              <span className="section-mini">İLETİŞİM</span>
+              <h2>Gözde Motor</h2>
 
-            <div className="contact-lines">
-              <p>📍 Şuhut / Afyon</p>
-              <p>📞 0543 718 20 17</p>
-              <p>📷 @gozdemotortr</p>
+              <div className="contact-lines">
+                <p>📍 Şuhut / Afyon</p>
+                <p>📞 0543 718 20 17</p>
+                <p>📷 @gozdemotortr</p>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="contact-right">
-            <iframe
-              src="https://www.google.com/maps?q=Şuhut%20Afyon&output=embed"
-              width="100%"
-              height="250"
-              style={{ border: 0, borderRadius: "18px" }}
-              loading="lazy"
-              title="Gözde Motor Konum"
-            ></iframe>
-          </div>
+          <Reveal delay={180}>
+            <div className="contact-right">
+              <iframe
+                src="https://www.google.com/maps?q=Şuhut%20Afyon&output=embed"
+                width="100%"
+                height="250"
+                style={{ border: 0, borderRadius: "18px" }}
+                loading="lazy"
+                title="Gözde Motor Konum"
+              ></iframe>
+            </div>
+          </Reveal>
         </div>
       </section>
 
