@@ -539,33 +539,38 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
     Number(product.old_price || 0) > Number(product.price || 0) &&
     Number(product.price || 0) > 0;
 
-  const isYouTubeEmbed =
-    product?.video_url &&
-    (product.video_url.includes("youtube.com/embed") ||
-      product.video_url.includes("youtube.com") ||
-      product.video_url.includes("youtu.be"));
-
   const convertYoutubeUrl = (url) => {
     if (!url) return "";
 
-    if (url.includes("youtu.be/")) {
-      const videoId = url.split("youtu.be/")[1].split("?")[0];
+    const cleanUrl = url.trim();
+
+    if (cleanUrl.includes("youtu.be/")) {
+      const videoId = cleanUrl.split("youtu.be/")[1].split("?")[0].split("/")[0];
       return `https://www.youtube.com/embed/${videoId}`;
     }
 
-    if (url.includes("watch?v=")) {
-      const videoId = url.split("watch?v=")[1].split("&")[0];
+    if (cleanUrl.includes("/shorts/")) {
+      const videoId = cleanUrl.split("/shorts/")[1].split("?")[0].split("/")[0];
       return `https://www.youtube.com/embed/${videoId}`;
     }
 
-    if (url.includes("embed")) {
-      return url;
+    if (cleanUrl.includes("watch?v=")) {
+      const videoId = cleanUrl.split("watch?v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
     }
 
-    return url;
+    if (cleanUrl.includes("/embed/")) {
+      return cleanUrl;
+    }
+
+    return cleanUrl;
   };
 
   const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
+
+  const isYoutubeSource =
+    normalizedYoutubeUrl.includes("youtube.com") ||
+    normalizedYoutubeUrl.includes("youtu.be");
 
   return (
     <div className="site">
@@ -669,11 +674,12 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
                     <h3>Ürün Videosu</h3>
 
                     <div className="product-video-box">
-                      {isYouTubeEmbed ? (
+                      {isYoutubeSource ? (
                         <iframe
                           src={normalizedYoutubeUrl}
                           title={product.name}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
                           allowFullScreen
                         ></iframe>
                       ) : (
