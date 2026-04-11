@@ -11,39 +11,6 @@
   background: rgba(255, 0, 0, 0.14);
 }
 
-.nav-cart-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  font-weight: 700;
-  transition: 0.25s;
-  text-decoration: none;
-}
-
-.nav-cart-link:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 59, 59, 0.35);
-}
-
-.cart-count-badge {
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ff2a2a, #b80000);
-  color: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 800;
-}
-
 .admin-auth-page,
 .admin-dashboard-page {
   min-height: 100vh;
@@ -748,7 +715,8 @@
 .header,
 .hero,
 .section,
-.floating-whatsapp {
+.floating-whatsapp,
+.floating-cart {
   position: relative;
   z-index: 1;
 }
@@ -827,6 +795,60 @@
   opacity: 0;
   transform: translateY(14px);
   animation: fadeUpSoft 0.65s ease forwards;
+}
+
+.floating-cart {
+  position: fixed;
+  right: 22px;
+  bottom: 92px;
+  z-index: 999;
+  min-width: 64px;
+  height: 64px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1c1c1c, #2d2d2d);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  animation: floatingCartPulse 3s ease-in-out infinite;
+}
+
+.floating-cart:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.floating-cart-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.floating-cart-text {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.floating-cart-count {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff2a2a, #b80000);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(255, 0, 0, 0.24);
 }
 
 .floating-whatsapp {
@@ -1152,6 +1174,21 @@
   }
 }
 
+@keyframes floatingCartPulse {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.36);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  }
+}
+
 @keyframes shineMove {
   0% {
     left: -120%;
@@ -1223,37 +1260,23 @@
   }
 
   .nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
   }
 
   .nav a,
-  .nav-cart-link,
   .nav-admin-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 42px;
-    width: 100%;
-    min-width: 0;
-    padding: 10px 8px;
-    font-size: 12px;
-    line-height: 1.1;
-    white-space: normal;
-    text-align: center;
-    box-sizing: border-box;
-  }
-
-  .nav-cart-link {
-    gap: 6px;
-  }
-
-  .cart-count-badge {
-    min-width: 20px;
-    height: 20px;
-    font-size: 11px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1;
+    white-space: nowrap;
   }
 }
 
@@ -1271,9 +1294,32 @@
     height: 220px;
   }
 
-  .brand-logo {
-    max-width: 170px;
-    height: auto;
+  .nav {
+    gap: 8px;
+  }
+
+  .nav a,
+  .nav-admin-link {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+
+  .floating-cart {
+    right: 18px;
+    bottom: 86px;
+    min-width: 58px;
+    height: 58px;
+    padding: 0 14px;
+  }
+
+  .floating-cart-text {
+    font-size: 13px;
+  }
+
+  .floating-whatsapp {
+    right: 18px;
+    bottom: 18px;
+    padding: 12px 18px;
   }
 }
 
@@ -1287,41 +1333,55 @@
   }
 
   .brand-logo {
-    max-width: 150px;
+    max-width: 160px;
     height: auto;
   }
 
   .nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  .nav a,
-  .nav-cart-link,
-  .nav-admin-link {
-    min-height: 40px;
-    padding: 8px 6px;
-    font-size: 11px;
-    border-radius: 12px;
-  }
-
-  .nav-cart-link .cart-count-badge {
-    min-width: 18px;
-    height: 18px;
-    font-size: 10px;
-  }
-}
-
-/* iOS Safari için ekstra güvenlik */
-@supports (-webkit-touch-callout: none) {
-  .nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
   }
 
   .nav a,
-  .nav-cart-link,
   .nav-admin-link {
-    -webkit-appearance: none;
-    appearance: none;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .floating-cart {
+    width: 58px;
+    min-width: 58px;
+    height: 58px;
+    padding: 0;
+    border-radius: 50%;
+    right: 16px;
+    bottom: 84px;
+    gap: 0;
+  }
+
+  .floating-cart-text {
+    display: none;
+  }
+
+  .floating-cart-icon {
+    font-size: 22px;
+  }
+
+  .floating-cart-count {
+    top: -4px;
+    right: -2px;
+    min-width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .floating-whatsapp {
+    right: 16px;
+    bottom: 16px;
   }
 }

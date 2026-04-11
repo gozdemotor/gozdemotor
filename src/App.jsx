@@ -97,7 +97,7 @@ function buildWhatsappCartMessage(cartItems) {
     .replaceAll(",", "%2C")}%20TL`;
 }
 
-function SiteHeader({ cartCount }) {
+function SiteHeader() {
   return (
     <header className="header">
       <div className="container header-inner">
@@ -110,10 +110,6 @@ function SiteHeader({ cartCount }) {
           <Link to="/urunler">Ürünler</Link>
           <a href="/#avantajlar">Neden Biz</a>
           <a href="/#iletisim">İletişim</a>
-          <Link to="/sepet" className="nav-cart-link">
-            Sepet
-            <span className="cart-count-badge">{cartCount}</span>
-          </Link>
           <Link to="/admin/login" className="nav-admin-link">
             Admin
           </Link>
@@ -123,13 +119,27 @@ function SiteHeader({ cartCount }) {
   );
 }
 
+function FloatingCart({ cartCount }) {
+  return (
+    <Link to="/sepet" className="floating-cart" aria-label="Sepet">
+      <span className="floating-cart-icon">🛒</span>
+      <span className="floating-cart-text">Sepet</span>
+      {cartCount > 0 ? (
+        <span className="floating-cart-count">{cartCount}</span>
+      ) : null}
+    </Link>
+  );
+}
+
 function ProductCard({ item, index = 0, addToCart }) {
   const hasDiscount =
-    Number(item.old_price || 0) > Number(item.price || 0) && Number(item.price || 0) > 0;
+    Number(item.old_price || 0) > Number(item.price || 0) &&
+    Number(item.price || 0) > 0;
 
   const discountPercent = hasDiscount
     ? Math.round(
-        ((Number(item.old_price) - Number(item.price)) / Number(item.old_price)) * 100
+        ((Number(item.old_price) - Number(item.price)) / Number(item.old_price)) *
+          100
       )
     : 0;
 
@@ -289,7 +299,7 @@ function HomePage({ products, addToCart, cartCount }) {
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader cartCount={cartCount} />
+      <SiteHeader />
 
       <section className="hero" id="anasayfa">
         <div className="hero-overlay"></div>
@@ -463,6 +473,8 @@ function HomePage({ products, addToCart, cartCount }) {
         </div>
       </section>
 
+      <FloatingCart cartCount={cartCount} />
+
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
         target="_blank"
@@ -482,7 +494,7 @@ function ProductsPage({ products, addToCart, cartCount }) {
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader cartCount={cartCount} />
+      <SiteHeader />
 
       <section className="section">
         <div className="container">
@@ -501,6 +513,8 @@ function ProductsPage({ products, addToCart, cartCount }) {
         setSelectedCategory={setSelectedCategory}
         addToCart={addToCart}
       />
+
+      <FloatingCart cartCount={cartCount} />
 
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
@@ -532,32 +546,32 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
       product.video_url.includes("youtu.be"));
 
   const convertYoutubeUrl = (url) => {
-  if (!url) return "";
+    if (!url) return "";
 
-  if (url.includes("youtu.be/")) {
-    const id = url.split("youtu.be/")[1].split("?")[0];
-    return `https://www.youtube.com/embed/${id}`;
-  }
+    if (url.includes("youtu.be/")) {
+      const videoId = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
 
-  if (url.includes("watch?v=")) {
-    const id = url.split("watch?v=")[1].split("&")[0];
-    return `https://www.youtube.com/embed/${id}`;
-  }
+    if (url.includes("watch?v=")) {
+      const videoId = url.split("watch?v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
 
-  if (url.includes("embed")) {
+    if (url.includes("embed")) {
+      return url;
+    }
+
     return url;
-  }
+  };
 
-  return url;
-};
-
-const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
+  const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
 
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader cartCount={cartCount} />
+      <SiteHeader />
 
       <section className="section product-detail-page">
         <div className="container">
@@ -676,6 +690,8 @@ const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
         </div>
       </section>
 
+      <FloatingCart cartCount={cartCount} />
+
       <a
         href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
         target="_blank"
@@ -694,7 +710,6 @@ function CartPage({
   decreaseQuantity,
   removeFromCart,
   cartTotal,
-  cartCount,
 }) {
   const whatsappLink = `https://wa.me/905437182017?text=${buildWhatsappCartMessage(
     cartItems
@@ -704,7 +719,7 @@ function CartPage({
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader cartCount={cartCount} />
+      <SiteHeader />
 
       <section className="section cart-page">
         <div className="container">
@@ -797,7 +812,9 @@ function CartPage({
 
               <div className="cart-summary-row">
                 <span>Toplam Ürün</span>
-                <strong>{cartCount}</strong>
+                <strong>
+                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                </strong>
               </div>
 
               <div className="cart-summary-row">
@@ -848,7 +865,12 @@ export default function App() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (error) {
+        console.error("PRODUCTS FETCH ERROR:", error);
+        return;
+      }
+
+      if (Array.isArray(data)) {
         const formattedProducts = data.map((item) => ({
           id: item.id,
           name: item.name,
@@ -862,7 +884,11 @@ export default function App() {
           video_url: item.video_url || "",
         }));
 
-        setProducts(formattedProducts);
+        if (formattedProducts.length > 0) {
+          setProducts(formattedProducts);
+        } else {
+          setProducts(defaultProducts);
+        }
       }
     };
 
@@ -958,7 +984,6 @@ export default function App() {
             decreaseQuantity={decreaseQuantity}
             removeFromCart={removeFromCart}
             cartTotal={cartTotal}
-            cartCount={cartCount}
           />
         }
       />
