@@ -6,9 +6,11 @@ const initialForm = {
   name: "",
   description: "",
   price: "",
+  old_price: "",
   stock: "",
   category: "",
   image_url: "",
+  video_url: "",
 };
 
 export default function AdminDashboard() {
@@ -119,13 +121,25 @@ export default function AdminDashboard() {
         name: form.name.trim(),
         description: form.description.trim(),
         price: Number(form.price) || 0,
+        old_price: form.old_price === "" ? null : Number(form.old_price),
         stock: Number(form.stock) || 0,
         category: form.category.trim(),
         image_url: finalImageUrl,
+        video_url: form.video_url.trim(),
       };
 
       if (!payload.name) {
         throw new Error("Ürün adı zorunlu.");
+      }
+
+      if (
+        payload.old_price !== null &&
+        payload.old_price !== undefined &&
+        payload.old_price > 0 &&
+        payload.price > 0 &&
+        payload.old_price <= payload.price
+      ) {
+        throw new Error("Eski fiyat, güncel fiyattan büyük olmalı.");
       }
 
       if (editingId) {
@@ -161,9 +175,11 @@ export default function AdminDashboard() {
       name: product.name || "",
       description: product.description || "",
       price: product.price ?? "",
+      old_price: product.old_price ?? "",
       stock: product.stock ?? "",
       category: product.category || "",
       image_url: product.image_url || "",
+      video_url: product.video_url || "",
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -193,7 +209,10 @@ export default function AdminDashboard() {
           <div>
             <div className="admin-panel-badge">GÖZDE MOTOR ADMIN</div>
             <h1>Admin Panel</h1>
-            <p>Buradan ürün ekleyebilir, düzenleyebilir, silebilir ve stok yönetebilirsin.</p>
+            <p>
+              Buradan ürün ekleyebilir, düzenleyebilir, silebilir, stok yönetebilir,
+              indirimli fiyat girebilir ve ürün videosu ekleyebilirsin.
+            </p>
           </div>
 
           <div className="admin-dashboard-actions">
@@ -236,7 +255,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="product-field">
-                  <label>Fiyat</label>
+                  <label>Güncel Fiyat</label>
                   <input
                     name="price"
                     type="number"
@@ -249,6 +268,19 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="product-field">
+                  <label>Eski Fiyat (İndirim İçin)</label>
+                  <input
+                    name="old_price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.old_price}
+                    onChange={handleChange}
+                    placeholder="İndirim yoksa boş bırak"
+                  />
+                </div>
+
+                <div className="product-field">
                   <label>Stok</label>
                   <input
                     name="stock"
@@ -257,6 +289,16 @@ export default function AdminDashboard() {
                     value={form.stock}
                     onChange={handleChange}
                     placeholder="0"
+                  />
+                </div>
+
+                <div className="product-field">
+                  <label>Video URL</label>
+                  <input
+                    name="video_url"
+                    value={form.video_url}
+                    onChange={handleChange}
+                    placeholder="YouTube embed veya mp4 linki"
                   />
                 </div>
               </div>
@@ -332,60 +374,82 @@ export default function AdminDashboard() {
               <div className="admin-empty-box">Henüz ürün yok.</div>
             ) : (
               <div className="admin-product-list">
-                {filteredProducts.map((product) => (
-                  <div className="admin-product-card" key={product.id}>
-                    <div className="admin-product-image-wrap">
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="admin-product-image"
-                        />
-                      ) : (
-                        <div className="admin-no-image">Fotoğraf Yok</div>
-                      )}
-                    </div>
+                {filteredProducts.map((product) => {
+                  const hasDiscount =
+                    Number(product.old_price || 0) > Number(product.price || 0);
 
-                    <div className="admin-product-content">
-                      <div className="admin-product-top">
-                        <div>
-                          <h3>{product.name}</h3>
-                          <p className="admin-product-category">
-                            {product.category || "Kategori yok"}
-                          </p>
+                  return (
+                    <div className="admin-product-card" key={product.id}>
+                      <div className="admin-product-image-wrap">
+                        {product.image_url ? (
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className="admin-product-image"
+                          />
+                        ) : (
+                          <div className="admin-no-image">Fotoğraf Yok</div>
+                        )}
+                      </div>
+
+                      <div className="admin-product-content">
+                        <div className="admin-product-top">
+                          <div>
+                            <h3>{product.name}</h3>
+                            <p className="admin-product-category">
+                              {product.category || "Kategori yok"}
+                            </p>
+                          </div>
+
+                          <div className="admin-stock-badge">
+                            Stok: {product.stock ?? 0}
+                          </div>
                         </div>
 
-                        <div className="admin-stock-badge">
-                          Stok: {product.stock ?? 0}
+                        <p className="admin-product-desc">
+                          {product.description || "Açıklama yok"}
+                        </p>
+
+                        <div className="admin-product-meta">
+                          {hasDiscount ? (
+                            <div className="admin-price-stack">
+                              <span className="admin-old-price">
+                                {Number(product.old_price).toLocaleString("tr-TR")} TL
+                              </span>
+                              <span className="admin-current-price">
+                                {Number(product.price || 0).toLocaleString("tr-TR")} TL
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="admin-current-price">
+                              {Number(product.price || 0).toLocaleString("tr-TR")} TL
+                            </span>
+                          )}
+                        </div>
+
+                        {product.video_url ? (
+                          <p className="admin-video-info">Video eklendi</p>
+                        ) : null}
+
+                        <div className="admin-card-actions">
+                          <button
+                            className="admin-secondary-btn"
+                            onClick={() => handleEdit(product)}
+                          >
+                            Düzenle
+                          </button>
+
+                          <button
+                            className="admin-danger-btn"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            Sil
+                          </button>
                         </div>
                       </div>
-
-                      <p className="admin-product-desc">
-                        {product.description || "Açıklama yok"}
-                      </p>
-
-                      <div className="admin-product-meta">
-                        <span>{Number(product.price || 0).toLocaleString("tr-TR")} TL</span>
-                      </div>
-
-                      <div className="admin-card-actions">
-                        <button
-                          className="admin-secondary-btn"
-                          onClick={() => handleEdit(product)}
-                        >
-                          Düzenle
-                        </button>
-
-                        <button
-                          className="admin-danger-btn"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          Sil
-                        </button>
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

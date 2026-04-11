@@ -20,8 +20,10 @@ const defaultProducts = [
     img: "/yag.jpg",
     description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
     price: "",
+    old_price: "",
     stock: "",
     category: "Yağ",
+    video_url: "",
   },
   {
     id: "default-2",
@@ -29,8 +31,10 @@ const defaultProducts = [
     img: "/zincir.jpg",
     description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
     price: "",
+    old_price: "",
     stock: "",
     category: "Zincir",
+    video_url: "",
   },
   {
     id: "default-3",
@@ -38,8 +42,10 @@ const defaultProducts = [
     img: "/kask.jpg",
     description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
     price: "",
+    old_price: "",
     stock: "",
     category: "Aksesuar",
+    video_url: "",
   },
   {
     id: "default-4",
@@ -47,8 +53,10 @@ const defaultProducts = [
     img: "/ampul.jpg",
     description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
     price: "",
+    old_price: "",
     stock: "",
     category: "Elektrik",
+    video_url: "",
   },
 ];
 
@@ -116,9 +124,22 @@ function SiteHeader({ cartCount }) {
 }
 
 function ProductCard({ item, index = 0, addToCart }) {
+  const hasDiscount =
+    Number(item.old_price || 0) > Number(item.price || 0) && Number(item.price || 0) > 0;
+
+  const discountPercent = hasDiscount
+    ? Math.round(
+        ((Number(item.old_price) - Number(item.price)) / Number(item.old_price)) * 100
+      )
+    : 0;
+
   return (
     <Reveal delay={80 + index * 70}>
       <div className="product-card animated-product-card">
+        {hasDiscount ? (
+          <div className="discount-badge">%{discountPercent} İndirim</div>
+        ) : null}
+
         <Link to={`/urun/${item.id}`} className="product-card-link">
           <div className="product-image-wrap">
             <img src={item.img} alt={item.name} className="product-img" />
@@ -131,9 +152,18 @@ function ProductCard({ item, index = 0, addToCart }) {
                 "Gözde Motor güvencesiyle satış ve hızlı destek."}
             </p>
 
-            {item.price !== undefined &&
-            item.price !== null &&
-            item.price !== "" ? (
+            {hasDiscount ? (
+              <div className="product-price-stack">
+                <p className="product-old-price">
+                  {Number(item.old_price).toLocaleString("tr-TR")} TL
+                </p>
+                <p className="product-price">
+                  Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                </p>
+              </div>
+            ) : item.price !== undefined &&
+              item.price !== null &&
+              item.price !== "" ? (
               <p className="product-price">
                 Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
               </p>
@@ -149,6 +179,10 @@ function ProductCard({ item, index = 0, addToCart }) {
               <p className="product-category-inline">
                 Kategori: {item.category}
               </p>
+            ) : null}
+
+            {item.video_url ? (
+              <p className="product-video-inline">Video mevcut</p>
             ) : null}
           </div>
         </Link>
@@ -486,6 +520,22 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
 
   const product = products.find((item) => String(item.id) === String(id));
 
+  const hasDiscount =
+    product &&
+    Number(product.old_price || 0) > Number(product.price || 0) &&
+    Number(product.price || 0) > 0;
+
+  const isYouTubeEmbed =
+    product?.video_url &&
+    (product.video_url.includes("youtube.com/embed") ||
+      product.video_url.includes("youtube.com") ||
+      product.video_url.includes("youtu.be"));
+
+  const normalizedYoutubeUrl =
+    product?.video_url && product.video_url.includes("youtu.be/")
+      ? product.video_url.replace("youtu.be/", "www.youtube.com/embed/")
+      : product?.video_url;
+
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
@@ -529,9 +579,18 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
                       {product.description}
                     </p>
 
-                    {product.price !== undefined &&
-                    product.price !== null &&
-                    product.price !== "" ? (
+                    {hasDiscount ? (
+                      <div className="product-detail-price-stack">
+                        <div className="product-detail-old-price">
+                          {Number(product.old_price).toLocaleString("tr-TR")} TL
+                        </div>
+                        <div className="product-detail-price">
+                          {Number(product.price).toLocaleString("tr-TR")} TL
+                        </div>
+                      </div>
+                    ) : product.price !== undefined &&
+                      product.price !== null &&
+                      product.price !== "" ? (
                       <div className="product-detail-price">
                         {Number(product.price).toLocaleString("tr-TR")} TL
                       </div>
@@ -573,6 +632,27 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
                     </div>
                   </div>
                 </div>
+
+                {product.video_url ? (
+                  <div className="product-video-section">
+                    <h3>Ürün Videosu</h3>
+
+                    <div className="product-video-box">
+                      {isYouTubeEmbed ? (
+                        <iframe
+                          src={normalizedYoutubeUrl}
+                          title={product.name}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : (
+                        <video controls src={product.video_url}>
+                          Tarayıcı video oynatmayı desteklemiyor.
+                        </video>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </Reveal>
           )}
@@ -759,8 +839,10 @@ export default function App() {
           description:
             item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
           price: item.price,
+          old_price: item.old_price,
           stock: item.stock,
           category: item.category,
+          video_url: item.video_url || "",
         }));
 
         setProducts(formattedProducts);
