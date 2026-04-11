@@ -1,531 +1,367 @@
-.nav-admin-link {
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 59, 59, 0.22);
-  background: rgba(255, 0, 0, 0.08);
-}
-
-.nav-admin-link:hover {
-  color: #ffffff;
-  border-color: rgba(255, 59, 59, 0.45);
-  background: rgba(255, 0, 0, 0.14);
-}
-
-.admin-auth-page,
-.admin-dashboard-page {
-  min-height: 100vh;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.9)),
-    url("/bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  padding: 32px 20px;
-}
-
-.admin-auth-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.admin-auth-card {
-  width: 100%;
-  max-width: 460px;
-  background: rgba(14, 14, 14, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
-}
-
-.admin-auth-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-
-.admin-back-link {
-  color: rgba(255, 255, 255, 0.78);
-  font-weight: 600;
-}
-
-.admin-back-link:hover {
-  color: #ff4a4a;
-}
-
-.admin-panel-badge {
-  display: inline-block;
-  padding: 9px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 59, 59, 0.35);
-  background: rgba(255, 0, 0, 0.08);
-  color: #ffb3b3;
-  font-size: 12px;
-  letter-spacing: 1px;
-  font-weight: 700;
-}
-
-.admin-auth-card h1,
-.admin-dashboard-header h1 {
-  font-size: 34px;
-  font-weight: 900;
-}
-
-.admin-auth-card p,
-.admin-dashboard-header p {
-  margin-top: 10px;
-  color: rgba(255, 255, 255, 0.74);
-  line-height: 1.7;
-}
-
-.admin-auth-form {
-  display: grid;
-  gap: 12px;
-  margin-top: 22px;
-}
-
-.admin-auth-form input {
-  width: 100%;
-  min-height: 54px;
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  font-size: 15px;
-  outline: none;
-}
-
-.admin-auth-form input::placeholder {
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.admin-auth-form input:focus {
-  border-color: rgba(255, 59, 59, 0.55);
-  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.12);
-}
-
-.admin-submit-btn,
-.admin-primary-btn,
-.admin-secondary-btn,
-.admin-switch-btn {
-  min-height: 52px;
-  border-radius: 14px;
-  font-weight: 800;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.admin-submit-btn,
-.admin-primary-btn {
-  border: none;
-  background: linear-gradient(135deg, #ff2a2a, #b80000);
-  color: #ffffff;
-  box-shadow: 0 10px 25px rgba(255, 0, 0, 0.2);
-}
-
-.admin-submit-btn:hover,
-.admin-primary-btn:hover,
-.admin-secondary-btn:hover,
-.admin-switch-btn:hover {
-  transform: translateY(-2px);
-}
-
-.admin-submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.admin-switch-btn,
-.admin-secondary-btn {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-}
-
-.admin-switch-btn {
-  width: 100%;
-  margin-top: 12px;
-}
-
-.admin-auth-message {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.6;
-}
-
-.admin-dashboard-wrap {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-.admin-dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-}
-
-.admin-dashboard-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.admin-primary-btn,
-.admin-secondary-btn {
-  padding: 0 20px;
-}
-
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.admin-box {
-  background: rgba(14, 14, 14, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  padding: 24px;
-}
-
-.admin-box h2 {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
-.admin-box p {
-  color: rgba(255, 255, 255, 0.74);
-  line-height: 1.7;
-}
-
-@media (max-width: 900px) {
-  .admin-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.admin-panel-layout {
-  display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.admin-form-box,
-.admin-list-box {
-  background: rgba(14, 14, 14, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  padding: 24px;
-}
-
-.admin-form-box h2,
-.admin-list-box h2 {
-  font-size: 24px;
-  margin-bottom: 18px;
-}
-
-.admin-alert {
-  margin-bottom: 18px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.86);
-}
-
-.product-form {
-  display: grid;
-  gap: 14px;
-}
-
-.product-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.product-field {
-  display: grid;
-  gap: 8px;
-}
-
-.product-field label {
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.86);
-}
-
-.product-field input,
-.product-field textarea {
-  width: 100%;
-  min-height: 52px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  font-size: 15px;
-  outline: none;
-}
-
-.product-field textarea {
-  min-height: 110px;
-  resize: vertical;
-}
-
-.product-field input:focus,
-.product-field textarea:focus,
-.admin-search-input:focus {
-  border-color: rgba(255, 59, 59, 0.55);
-  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.12);
-}
-
-.admin-form-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.admin-list-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-
-.admin-search-input {
-  width: 280px;
-  max-width: 100%;
-  min-height: 50px;
-  padding: 0 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  outline: none;
-}
-
-.admin-product-list {
-  display: grid;
-  gap: 16px;
-}
-
-.admin-product-card {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 18px;
-  padding: 14px;
-}
-
-.admin-product-image-wrap {
-  width: 140px;
-  height: 140px;
-  border-radius: 14px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.admin-product-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.admin-no-image {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  text-align: center;
-  padding: 10px;
-}
-
-.admin-product-content h3 {
-  font-size: 22px;
-  margin-bottom: 4px;
-}
-
-.admin-product-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: start;
-  flex-wrap: wrap;
-}
-
-.admin-product-category {
-  color: #ff8c8c;
-  font-size: 14px;
-  margin: 0;
-}
-
-.admin-stock-badge {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 0, 0, 0.10);
-  border: 1px solid rgba(255, 59, 59, 0.25);
-  color: #ffd0d0;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.admin-product-desc {
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.65;
-}
-
-.admin-product-meta {
-  margin-top: 12px;
-  font-size: 18px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.admin-card-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.admin-danger-btn {
-  min-height: 52px;
-  padding: 0 20px;
-  border-radius: 14px;
-  font-weight: 800;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.25s;
-  border: none;
-  background: linear-gradient(135deg, #641111, #a30000);
-  color: #ffffff;
-}
-
-.admin-danger-btn:hover {
-  transform: translateY(-2px);
-}
-
-.admin-empty-box {
-  min-height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.66);
-  text-align: center;
-  padding: 20px;
-}
-
-@media (max-width: 1100px) {
-  .admin-panel-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  .product-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-product-card {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-product-image-wrap {
-    width: 100%;
-    height: 220px;
-  }
-}
-
-.products-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.category-sidebar {
-  position: sticky;
-  top: 120px;
-  background: rgba(14, 14, 14, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 20px;
-}
-
-.category-sidebar h3 {
-  margin-bottom: 16px;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.category-list {
-  display: grid;
-  gap: 10px;
-}
-
-.category-btn {
-  width: 100%;
-  min-height: 48px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.25s;
-  padding: 0 14px;
-  text-align: left;
-}
-
-.category-btn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 0, 0, 0.35);
-}
-
-.category-btn.active {
-  background: linear-gradient(135deg, #ff2a2a, #b80000);
-  border-color: transparent;
-  color: #ffffff;
-  box-shadow: 0 10px 24px rgba(255, 0, 0, 0.2);
-}
-
-.products-content {
-  min-width: 0;
-}
-
-@media (max-width: 1024px) {
-  .products-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .category-sidebar {
-    position: static;
-  }
+import { useEffect, useMemo, useState } from "react";
+import { Routes, Route, Navigate, Link } from "react-router-dom";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import { supabase } from "./lib/supabase";
+import "./App.css";
+
+function Reveal({ children, delay = 0 }) {
+  return (
+    <div
+      className="reveal"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function HomePage() {
+  const [products, setProducts] = useState([
+    { name: "Motor Yağları", img: "/yag.jpg" },
+    { name: "Zincir Setleri", img: "/zincir.jpg" },
+    { name: "Kask ve Çanta", img: "/kask.jpg" },
+    { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState("Tümü");
+
+  const features = [
+    "Hızlı parça temini",
+    "Esnaf işi güven",
+    "Şuhut içi kolay ulaşım",
+    "Türkiye geneli gönderim",
+  ];
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const formattedProducts = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          img: item.image_url || "/yag.jpg",
+          description:
+            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          price: item.price,
+          stock: item.stock,
+          category: item.category,
+        }));
+
+        setProducts(formattedProducts);
+      }
+    };
+
+    getProducts();
+  }, []);
+
+  const categories = useMemo(() => {
+    const dynamicCategories = products
+      .map((item) => item.category)
+      .filter((item) => item && item.trim() !== "");
+
+    return ["Tümü", ...new Set(dynamicCategories)];
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "Tümü") return products;
+    return products.filter((item) => item.category === selectedCategory);
+  }, [products, selectedCategory]);
+
+  return (
+    <div className="site">
+      <div className="site-ambient-glow"></div>
+
+      <header className="header">
+        <div className="container header-inner">
+          <a href="#anasayfa" className="brand">
+            <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
+          </a>
+
+          <nav className="nav">
+            <a href="#anasayfa">Ana Sayfa</a>
+            <a href="#urunler">Ürünler</a>
+            <a href="#avantajlar">Neden Biz</a>
+            <a href="#iletisim">İletişim</a>
+            <Link to="/admin/login" className="nav-admin-link">
+              Admin
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <section className="hero" id="anasayfa">
+        <div className="hero-overlay"></div>
+        <div className="hero-bg-logo"></div>
+
+        <div className="container hero-grid">
+          <div className="hero-left">
+            <Reveal delay={0}>
+              <div className="hero-badge">Şuhut / Afyon</div>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <h1>
+                Motoruna ne lazımsa <span>Gözde Motor</span>'da.
+              </h1>
+            </Reveal>
+
+            <Reveal delay={240}>
+              <p>
+                Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
+                motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
+              </p>
+            </Reveal>
+
+            <Reveal delay={360}>
+              <div className="hero-actions">
+                <a
+                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20par%C3%A7a%20sormak%20istiyorum."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary"
+                >
+                  WhatsApp'tan Yaz
+                </a>
+
+                <a href="tel:05437182017" className="btn btn-secondary">
+                  Hemen Ara
+                </a>
+
+                <Link to="/admin/login" className="btn btn-secondary">
+                  Admin Girişi
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal delay={480}>
+              <div className="stats">
+                <div className="stat-card">
+                  <strong>Parça</strong>
+                  <span>Geniş ürün grubu</span>
+                </div>
+                <div className="stat-card">
+                  <strong>Servis</strong>
+                  <span>Pratik çözüm</span>
+                </div>
+                <div className="stat-card">
+                  <strong>Kargo</strong>
+                  <span>Türkiye geneli</span>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={260}>
+            <div className="hero-card hero-card-animated">
+              <div className="panel-label">GÖZDE MOTOR</div>
+              <h2>Motor & Yedek Parça Merkezi</h2>
+              <p>
+                WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
+                sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
+              </p>
+
+              <ul className="hero-list">
+                <li>Motor yedek parça satışı</li>
+                <li>Aksesuar ve ekipman ürünleri</li>
+                <li>Servis ve tamir desteği</li>
+                <li>Hızlı müşteri iletişimi</li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" id="urunler">
+        <div className="container">
+          <Reveal>
+            <div className="section-top">
+              <span className="section-mini">ÜRÜN VİTRİNİ</span>
+              <h2>En çok sorulan ürün grupları</h2>
+            </div>
+          </Reveal>
+
+          <div className="products-layout">
+            <Reveal delay={100}>
+              <aside className="category-sidebar">
+                <h3>Kategoriler</h3>
+
+                <div className="category-list">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      className={
+                        selectedCategory === category
+                          ? "category-btn active"
+                          : "category-btn"
+                      }
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            </Reveal>
+
+            <div className="products-content">
+              <div className="product-grid">
+                {filteredProducts.map((item, index) => (
+                  <Reveal key={item.id || item.name || index} delay={80 + index * 70}>
+                    <div className="product-card animated-product-card">
+                      <div className="product-image-wrap">
+                        <img src={item.img} alt={item.name} className="product-img" />
+                      </div>
+
+                      <div className="product-content">
+                        <h3>{item.name}</h3>
+                        <p>
+                          {item.description ||
+                            "Gözde Motor güvencesiyle satış ve hızlı destek."}
+                        </p>
+
+                        {item.price !== undefined &&
+                        item.price !== null &&
+                        item.price !== "" ? (
+                          <p className="product-price">
+                            Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                          </p>
+                        ) : null}
+
+                        {item.stock !== undefined &&
+                        item.stock !== null &&
+                        item.stock !== "" ? (
+                          <p className="product-stock">Stok: {item.stock}</p>
+                        ) : null}
+
+                        {item.category ? (
+                          <p className="product-category-inline">
+                            Kategori: {item.category}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-dark" id="avantajlar">
+        <div className="container split-grid">
+          <Reveal delay={60}>
+            <div className="info-box animated-box">
+              <span className="section-mini">NEDEN BİZ?</span>
+              <h2>Müşterinin işini uzatmayan dükkan</h2>
+
+              <div className="feature-list">
+                {features.map((item, index) => (
+                  <div
+                    className="feature-item feature-animated"
+                    key={item}
+                    style={{ animationDelay: `${index * 0.08}s` }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <div className="contact-box animated-box">
+              <span className="section-mini">HIZLI İLETİŞİM</span>
+              <h2>Bir mesaj kadar yakınız</h2>
+              <p>
+                Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca dönüş yapalım.
+              </p>
+
+              <div className="contact-buttons">
+                <a
+                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary"
+                >
+                  WhatsApp
+                </a>
+
+                <a
+                  href="https://instagram.com/gozdemotortr"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-secondary"
+                >
+                  Instagram
+                </a>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" id="iletisim">
+        <div className="container contact-main">
+          <Reveal delay={60}>
+            <div className="contact-left animated-box">
+              <span className="section-mini">İLETİŞİM</span>
+              <h2>Gözde Motor</h2>
+
+              <div className="contact-lines">
+                <p>📍 Şuhut / Afyon</p>
+                <p>📞 0543 718 20 17</p>
+                <p>📷 @gozdemotortr</p>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <div className="contact-right map-animated">
+              <iframe
+                src="https://www.google.com/maps?q=Şuhut%20Afyon&output=embed"
+                width="100%"
+                height="250"
+                style={{ border: 0, borderRadius: "18px" }}
+                loading="lazy"
+                title="Gözde Motor Konum"
+              ></iframe>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <a
+        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+      >
+        WhatsApp
+      </a>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedAdminRoute>
+            <AdminDashboard />
+          </ProtectedAdminRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
