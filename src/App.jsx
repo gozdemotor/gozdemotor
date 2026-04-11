@@ -1,17 +1,60 @@
 import { useEffect, useMemo, useState } from "react";
-import { Routes, Route, Navigate, Link } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import { supabase } from "./lib/supabase";
 import "./App.css";
 
+const defaultProducts = [
+  {
+    id: "default-1",
+    name: "Motor Yağları",
+    img: "/yag.jpg",
+    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
+    price: "",
+    stock: "",
+    category: "Yağ",
+  },
+  {
+    id: "default-2",
+    name: "Zincir Setleri",
+    img: "/zincir.jpg",
+    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
+    price: "",
+    stock: "",
+    category: "Zincir",
+  },
+  {
+    id: "default-3",
+    name: "Kask ve Çanta",
+    img: "/kask.jpg",
+    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
+    price: "",
+    stock: "",
+    category: "Aksesuar",
+  },
+  {
+    id: "default-4",
+    name: "Ampul ve Elektrik",
+    img: "/ampul.jpg",
+    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
+    price: "",
+    stock: "",
+    category: "Elektrik",
+  },
+];
+
 function Reveal({ children, delay = 0 }) {
   return (
-    <div
-      className="reveal"
-      style={{ animationDelay: `${delay}ms` }}
-    >
+    <div className="reveal" style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
   );
@@ -36,6 +79,52 @@ function SiteHeader() {
         </nav>
       </div>
     </header>
+  );
+}
+
+function ProductCard({ item, index = 0 }) {
+  return (
+    <Reveal delay={80 + index * 70}>
+      <div className="product-card animated-product-card">
+        <Link to={`/urun/${item.id}`} className="product-card-link">
+          <div className="product-image-wrap">
+            <img src={item.img} alt={item.name} className="product-img" />
+          </div>
+
+          <div className="product-content">
+            <h3>{item.name}</h3>
+            <p>
+              {item.description ||
+                "Gözde Motor güvencesiyle satış ve hızlı destek."}
+            </p>
+
+            {item.price !== undefined &&
+            item.price !== null &&
+            item.price !== "" ? (
+              <p className="product-price">
+                Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+              </p>
+            ) : null}
+
+            {item.stock !== undefined &&
+            item.stock !== null &&
+            item.stock !== "" ? (
+              <p className="product-stock">Stok: {item.stock}</p>
+            ) : null}
+
+            {item.category ? (
+              <p className="product-category-inline">
+                Kategori: {item.category}
+              </p>
+            ) : null}
+
+            <div className="product-card-actions">
+              <span className="product-detail-btn">Ürünü İncele</span>
+            </div>
+          </div>
+        </Link>
+      </div>
+    </Reveal>
   );
 }
 
@@ -89,41 +178,11 @@ function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
           <div className="products-content">
             <div className="product-grid">
               {filteredProducts.map((item, index) => (
-                <Reveal key={item.id || item.name || index} delay={80 + index * 70}>
-                  <div className="product-card animated-product-card">
-                    <div className="product-image-wrap">
-                      <img src={item.img} alt={item.name} className="product-img" />
-                    </div>
-
-                    <div className="product-content">
-                      <h3>{item.name}</h3>
-                      <p>
-                        {item.description ||
-                          "Gözde Motor güvencesiyle satış ve hızlı destek."}
-                      </p>
-
-                      {item.price !== undefined &&
-                      item.price !== null &&
-                      item.price !== "" ? (
-                        <p className="product-price">
-                          Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
-                        </p>
-                      ) : null}
-
-                      {item.stock !== undefined &&
-                      item.stock !== null &&
-                      item.stock !== "" ? (
-                        <p className="product-stock">Stok: {item.stock}</p>
-                      ) : null}
-
-                      {item.category ? (
-                        <p className="product-category-inline">
-                          Kategori: {item.category}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                </Reveal>
+                <ProductCard
+                  key={item.id || item.name || index}
+                  item={item}
+                  index={index}
+                />
               ))}
             </div>
           </div>
@@ -134,12 +193,7 @@ function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
 }
 
 function HomePage() {
-  const [products, setProducts] = useState([
-    { name: "Motor Yağları", img: "/yag.jpg" },
-    { name: "Zincir Setleri", img: "/zincir.jpg" },
-    { name: "Kask ve Çanta", img: "/kask.jpg" },
-    { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
-  ]);
+  const [products, setProducts] = useState(defaultProducts);
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   const features = [
@@ -365,12 +419,7 @@ function HomePage() {
 }
 
 function ProductsPage() {
-  const [products, setProducts] = useState([
-    { name: "Motor Yağları", img: "/yag.jpg" },
-    { name: "Zincir Setleri", img: "/zincir.jpg" },
-    { name: "Kask ve Çanta", img: "/kask.jpg" },
-    { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
-  ]);
+  const [products, setProducts] = useState(defaultProducts);
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   useEffect(() => {
@@ -434,11 +483,159 @@ function ProductsPage() {
   );
 }
 
+function ProductDetailPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getProduct = async () => {
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (!error && data) {
+        setProduct({
+          id: data.id,
+          name: data.name,
+          img: data.image_url || "/yag.jpg",
+          description:
+            data.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          price: data.price,
+          stock: data.stock,
+          category: data.category,
+        });
+        setLoading(false);
+        return;
+      }
+
+      const fallback = defaultProducts.find((item) => item.id === id);
+
+      if (fallback) {
+        setProduct(fallback);
+      } else {
+        setProduct(null);
+      }
+
+      setLoading(false);
+    };
+
+    getProduct();
+  }, [id]);
+
+  return (
+    <div className="site">
+      <div className="site-ambient-glow"></div>
+
+      <SiteHeader />
+
+      <section className="section product-detail-page">
+        <div className="container">
+          {loading ? (
+            <div className="product-detail-box">
+              <h2>Ürün yükleniyor...</h2>
+            </div>
+          ) : !product ? (
+            <div className="product-detail-box">
+              <h2>Ürün bulunamadı</h2>
+              <div className="detail-actions">
+                <button className="btn btn-secondary" onClick={() => navigate("/urunler")}>
+                  Ürünlere Dön
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Reveal>
+              <div className="product-detail-box">
+                <div className="product-detail-grid">
+                  <div className="product-detail-image-wrap">
+                    <img
+                      src={product.img}
+                      alt={product.name}
+                      className="product-detail-image"
+                    />
+                  </div>
+
+                  <div className="product-detail-content">
+                    <span className="section-mini">ÜRÜN DETAYI</span>
+                    <h1>{product.name}</h1>
+
+                    {product.category ? (
+                      <p className="product-detail-category">
+                        Kategori: {product.category}
+                      </p>
+                    ) : null}
+
+                    <p className="product-detail-description">
+                      {product.description}
+                    </p>
+
+                    {product.price !== undefined &&
+                    product.price !== null &&
+                    product.price !== "" ? (
+                      <div className="product-detail-price">
+                        {Number(product.price).toLocaleString("tr-TR")} TL
+                      </div>
+                    ) : null}
+
+                    {product.stock !== undefined &&
+                    product.stock !== null &&
+                    product.stock !== "" ? (
+                      <div className="product-detail-stock">
+                        Stok: {product.stock}
+                      </div>
+                    ) : null}
+
+                    <div className="detail-actions">
+                      <a
+                        href={`https://wa.me/905437182017?text=Merhaba%20${encodeURIComponent(
+                          product.name
+                        )}%20ürünü%20hakkında%20bilgi%20alabilir%20miyim?`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-primary"
+                      >
+                        WhatsApp ile Sor
+                      </a>
+
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => navigate("/urunler")}
+                      >
+                        Ürünlere Dön
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          )}
+        </div>
+      </section>
+
+      <a
+        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+      >
+        WhatsApp
+      </a>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/urunler" element={<ProductsPage />} />
+      <Route path="/urun/:id" element={<ProductDetailPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"
