@@ -110,9 +110,6 @@ function SiteHeader() {
           <Link to="/urunler">Ürünler</Link>
           <a href="/#avantajlar">Neden Biz</a>
           <a href="/#iletisim">İletişim</a>
-          <Link to="/admin/login" className="nav-admin-link">
-            Admin
-          </Link>
         </nav>
       </div>
     </header>
