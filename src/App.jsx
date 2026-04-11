@@ -531,10 +531,27 @@ function ProductDetailPage({ products, addToCart, cartCount }) {
       product.video_url.includes("youtube.com") ||
       product.video_url.includes("youtu.be"));
 
-  const normalizedYoutubeUrl =
-    product?.video_url && product.video_url.includes("youtu.be/")
-      ? product.video_url.replace("youtu.be/", "www.youtube.com/embed/")
-      : product?.video_url;
+  const convertYoutubeUrl = (url) => {
+  if (!url) return "";
+
+  if (url.includes("youtu.be/")) {
+    const id = url.split("youtu.be/")[1].split("?")[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+
+  if (url.includes("watch?v=")) {
+    const id = url.split("watch?v=")[1].split("&")[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+
+  if (url.includes("embed")) {
+    return url;
+  }
+
+  return url;
+};
+
+const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
 
   return (
     <div className="site">
