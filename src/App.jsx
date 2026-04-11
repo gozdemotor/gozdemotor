@@ -60,7 +60,36 @@ function Reveal({ children, delay = 0 }) {
   );
 }
 
-function SiteHeader() {
+function buildWhatsappCartMessage(cartItems) {
+  if (!cartItems.length) {
+    return "Merhaba, sepetim hakkında bilgi almak istiyorum.";
+  }
+
+  const lines = cartItems.map((item, index) => {
+    const unitPrice = Number(item.price || 0);
+    const lineTotal = unitPrice * item.quantity;
+
+    return `${index + 1}. ${item.name} - Adet: ${item.quantity}${
+      unitPrice > 0
+        ? ` - Birim: ${unitPrice.toLocaleString("tr-TR")} TL - Tutar: ${lineTotal.toLocaleString("tr-TR")} TL`
+        : ""
+    }`;
+  });
+
+  const total = cartItems.reduce(
+    (sum, item) => sum + Number(item.price || 0) * item.quantity,
+    0
+  );
+
+  return `Merhaba, sepetteki ürünlerim için bilgi almak istiyorum.%0A%0A${lines
+    .map((line) => line.replaceAll(" ", "%20"))
+    .join("%0A")}%0A%0AToplam:%20${total
+    .toLocaleString("tr-TR")
+    .replaceAll(".", "%2E")
+    .replaceAll(",", "%2C")}%20TL`;
+}
+
+function SiteHeader({ cartCount }) {
   return (
     <header className="header">
       <div className="container header-inner">
@@ -73,6 +102,10 @@ function SiteHeader() {
           <Link to="/urunler">Ürünler</Link>
           <a href="/#avantajlar">Neden Biz</a>
           <a href="/#iletisim">İletişim</a>
+          <Link to="/sepet" className="nav-cart-link">
+            Sepet
+            <span className="cart-count-badge">{cartCount}</span>
+          </Link>
           <Link to="/admin/login" className="nav-admin-link">
             Admin
           </Link>
@@ -82,7 +115,7 @@ function SiteHeader() {
   );
 }
 
-function ProductCard({ item, index = 0 }) {
+function ProductCard({ item, index = 0, addToCart }) {
   return (
     <Reveal delay={80 + index * 70}>
       <div className="product-card animated-product-card">
@@ -117,18 +150,33 @@ function ProductCard({ item, index = 0 }) {
                 Kategori: {item.category}
               </p>
             ) : null}
-
-            <div className="product-card-actions">
-              <span className="product-detail-btn">Ürünü İncele</span>
-            </div>
           </div>
         </Link>
+
+        <div className="product-card-actions">
+          <Link to={`/urun/${item.id}`} className="product-detail-btn">
+            Ürünü İncele
+          </Link>
+
+          <button
+            type="button"
+            className="product-cart-btn"
+            onClick={() => addToCart(item)}
+          >
+            Sepete Ekle
+          </button>
+        </div>
       </div>
     </Reveal>
   );
 }
 
-function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
+function ProductsSection({
+  products,
+  selectedCategory,
+  setSelectedCategory,
+  addToCart,
+}) {
   const categories = useMemo(() => {
     const dynamicCategories = products
       .map((item) => item.category)
@@ -182,6 +230,7 @@ function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
                   key={item.id || item.name || index}
                   item={item}
                   index={index}
+                  addToCart={addToCart}
                 />
               ))}
             </div>
@@ -192,8 +241,7 @@ function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
   );
 }
 
-function HomePage() {
-  const [products, setProducts] = useState(defaultProducts);
+function HomePage({ products, addToCart, cartCount }) {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   const features = [
@@ -203,37 +251,11 @@ function HomePage() {
     "Türkiye geneli gönderim",
   ];
 
-  useEffect(() => {
-    const getProducts = async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && data && data.length > 0) {
-        const formattedProducts = data.map((item) => ({
-          id: item.id,
-          name: item.name,
-          img: item.image_url || "/yag.jpg",
-          description:
-            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
-          price: item.price,
-          stock: item.stock,
-          category: item.category,
-        }));
-
-        setProducts(formattedProducts);
-      }
-    };
-
-    getProducts();
-  }, []);
-
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader />
+      <SiteHeader cartCount={cartCount} />
 
       <section className="hero" id="anasayfa">
         <div className="hero-overlay"></div>
@@ -321,6 +343,7 @@ function HomePage() {
         products={products}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        addToCart={addToCart}
       />
 
       <section className="section section-dark" id="avantajlar">
@@ -418,41 +441,14 @@ function HomePage() {
   );
 }
 
-function ProductsPage() {
-  const [products, setProducts] = useState(defaultProducts);
+function ProductsPage({ products, addToCart, cartCount }) {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
-
-  useEffect(() => {
-    const getProducts = async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && data && data.length > 0) {
-        const formattedProducts = data.map((item) => ({
-          id: item.id,
-          name: item.name,
-          img: item.image_url || "/yag.jpg",
-          description:
-            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
-          price: item.price,
-          stock: item.stock,
-          category: item.category,
-        }));
-
-        setProducts(formattedProducts);
-      }
-    };
-
-    getProducts();
-  }, []);
 
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader />
+      <SiteHeader cartCount={cartCount} />
 
       <section className="section">
         <div className="container">
@@ -469,6 +465,7 @@ function ProductsPage() {
         products={products}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        addToCart={addToCart}
       />
 
       <a
@@ -483,64 +480,21 @@ function ProductsPage() {
   );
 }
 
-function ProductDetailPage() {
+function ProductDetailPage({ products, addToCart, cartCount }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getProduct = async () => {
-      setLoading(true);
-
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-
-      if (!error && data) {
-        setProduct({
-          id: data.id,
-          name: data.name,
-          img: data.image_url || "/yag.jpg",
-          description:
-            data.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
-          price: data.price,
-          stock: data.stock,
-          category: data.category,
-        });
-        setLoading(false);
-        return;
-      }
-
-      const fallback = defaultProducts.find((item) => item.id === id);
-
-      if (fallback) {
-        setProduct(fallback);
-      } else {
-        setProduct(null);
-      }
-
-      setLoading(false);
-    };
-
-    getProduct();
-  }, [id]);
+  const product = products.find((item) => String(item.id) === String(id));
 
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <SiteHeader />
+      <SiteHeader cartCount={cartCount} />
 
       <section className="section product-detail-page">
         <div className="container">
-          {loading ? (
-            <div className="product-detail-box">
-              <h2>Ürün yükleniyor...</h2>
-            </div>
-          ) : !product ? (
+          {!product ? (
             <div className="product-detail-box">
               <h2>Ürün bulunamadı</h2>
               <div className="detail-actions">
@@ -592,13 +546,20 @@ function ProductDetailPage() {
                     ) : null}
 
                     <div className="detail-actions">
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => addToCart(product)}
+                      >
+                        Sepete Ekle
+                      </button>
+
                       <a
                         href={`https://wa.me/905437182017?text=Merhaba%20${encodeURIComponent(
                           product.name
                         )}%20ürünü%20hakkında%20bilgi%20alabilir%20miyim?`}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn btn-primary"
+                        className="btn btn-secondary"
                       >
                         WhatsApp ile Sor
                       </a>
@@ -630,12 +591,278 @@ function ProductDetailPage() {
   );
 }
 
+function CartPage({
+  cartItems,
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart,
+  cartTotal,
+  cartCount,
+}) {
+  const whatsappLink = `https://wa.me/905437182017?text=${buildWhatsappCartMessage(
+    cartItems
+  )}`;
+
+  return (
+    <div className="site">
+      <div className="site-ambient-glow"></div>
+
+      <SiteHeader cartCount={cartCount} />
+
+      <section className="section cart-page">
+        <div className="container">
+          <Reveal>
+            <div className="section-top" style={{ marginTop: "40px" }}>
+              <span className="section-mini">SEPET</span>
+              <h2>Sepetim</h2>
+            </div>
+          </Reveal>
+
+          <div className="cart-layout">
+            <div className="cart-items-box">
+              {cartItems.length === 0 ? (
+                <div className="cart-empty-box">
+                  Sepetinde henüz ürün yok.
+                </div>
+              ) : (
+                <div className="cart-item-list">
+                  {cartItems.map((item, index) => (
+                    <Reveal key={item.id} delay={index * 60}>
+                      <div className="cart-item-card">
+                        <div className="cart-item-image-wrap">
+                          <img
+                            src={item.img}
+                            alt={item.name}
+                            className="cart-item-image"
+                          />
+                        </div>
+
+                        <div className="cart-item-content">
+                          <h3>{item.name}</h3>
+
+                          {item.category ? (
+                            <p className="cart-item-category">
+                              Kategori: {item.category}
+                            </p>
+                          ) : null}
+
+                          {item.price !== undefined &&
+                          item.price !== null &&
+                          item.price !== "" ? (
+                            <p className="cart-item-price">
+                              {Number(item.price).toLocaleString("tr-TR")} TL
+                            </p>
+                          ) : null}
+
+                          <div className="cart-quantity-row">
+                            <button
+                              className="qty-btn"
+                              onClick={() => decreaseQuantity(item.id)}
+                            >
+                              -
+                            </button>
+
+                            <span className="qty-value">{item.quantity}</span>
+
+                            <button
+                              className="qty-btn"
+                              onClick={() => increaseQuantity(item.id)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="cart-item-side">
+                          <div className="cart-line-total">
+                            {(Number(item.price || 0) * item.quantity).toLocaleString(
+                              "tr-TR"
+                            )}{" "}
+                            TL
+                          </div>
+
+                          <button
+                            className="remove-cart-btn"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            Sil
+                          </button>
+                        </div>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="cart-summary-box">
+              <h3>Sepet Özeti</h3>
+
+              <div className="cart-summary-row">
+                <span>Toplam Ürün</span>
+                <strong>{cartCount}</strong>
+              </div>
+
+              <div className="cart-summary-row">
+                <span>Toplam Tutar</span>
+                <strong>{cartTotal.toLocaleString("tr-TR")} TL</strong>
+              </div>
+
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-primary cart-order-btn"
+              >
+                WhatsApp ile Sipariş Sor
+              </a>
+
+              <Link to="/urunler" className="btn btn-secondary cart-order-btn">
+                Alışverişe Devam Et
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <a
+        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+      >
+        WhatsApp
+      </a>
+    </div>
+  );
+}
+
 export default function App() {
+  const [products, setProducts] = useState(defaultProducts);
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem("gozde-motor-cart");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const formattedProducts = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          img: item.image_url || "/yag.jpg",
+          description:
+            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          price: item.price,
+          stock: item.stock,
+          category: item.category,
+        }));
+
+        setProducts(formattedProducts);
+      }
+    };
+
+    getProducts();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("gozde-motor-cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product) => {
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const increaseQuantity = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (id) => {
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+  const removeFromCart = (id) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = cartItems.reduce(
+    (sum, item) => sum + Number(item.price || 0) * item.quantity,
+    0
+  );
+
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/urunler" element={<ProductsPage />} />
-      <Route path="/urun/:id" element={<ProductDetailPage />} />
+      <Route
+        path="/"
+        element={
+          <HomePage
+            products={products}
+            addToCart={addToCart}
+            cartCount={cartCount}
+          />
+        }
+      />
+      <Route
+        path="/urunler"
+        element={
+          <ProductsPage
+            products={products}
+            addToCart={addToCart}
+            cartCount={cartCount}
+          />
+        }
+      />
+      <Route
+        path="/urun/:id"
+        element={
+          <ProductDetailPage
+            products={products}
+            addToCart={addToCart}
+            cartCount={cartCount}
+          />
+        }
+      />
+      <Route
+        path="/sepet"
+        element={
+          <CartPage
+            cartItems={cartItems}
+            increaseQuantity={increaseQuantity}
+            decreaseQuantity={decreaseQuantity}
+            removeFromCart={removeFromCart}
+            cartTotal={cartTotal}
+            cartCount={cartCount}
+          />
+        }
+      />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"
