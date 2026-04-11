@@ -144,16 +144,28 @@ function HomePage() {
           </div>
 
           <div className="product-grid">
-            {products.map((item, index) => (
-              <div className="product-card" key={item.id || item.name || index}>
-                <img src={item.img} alt={item.name} className="product-img" />
-                <div className="product-content">
-                  <h3>{item.name}</h3>
-                  <p>{item.description || "Gözde Motor güvencesiyle satış ve hızlı destek."}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+  {products.map((item, index) => (
+    <div className="product-card" key={item.id || item.name || index}>
+      <img src={item.img} alt={item.name} className="product-img" />
+      <div className="product-content">
+        <h3>{item.name}</h3>
+        <p>{item.description || "Gözde Motor güvencesiyle satış ve hızlı destek."}</p>
+
+        {item.price !== undefined && item.price !== null && item.price !== "" ? (
+          <p style={{ marginTop: "10px", fontWeight: "800", color: "#ffffff" }}>
+            Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+          </p>
+        ) : null}
+
+        {item.stock !== undefined && item.stock !== null && item.stock !== "" ? (
+          <p style={{ marginTop: "6px", color: "rgba(255,255,255,0.78)" }}>
+            Stok: {item.stock}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  ))}
+</div>
         </div>
       </section>
 
