@@ -217,3 +217,247 @@
     grid-template-columns: 1fr;
   }
 }
+.admin-panel-layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-form-box,
+.admin-list-box {
+  background: rgba(14, 14, 14, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.admin-form-box h2,
+.admin-list-box h2 {
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+.admin-alert {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.product-form {
+  display: grid;
+  gap: 14px;
+}
+
+.product-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.product-field {
+  display: grid;
+  gap: 8px;
+}
+
+.product-field label {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.product-field input,
+.product-field textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+}
+
+.product-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.product-field input:focus,
+.product-field textarea:focus,
+.admin-search-input:focus {
+  border-color: rgba(255, 59, 59, 0.55);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.12);
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-list-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-search-input {
+  width: 280px;
+  max-width: 100%;
+  min-height: 50px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  outline: none;
+}
+
+.admin-product-list {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-product-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.admin-product-image-wrap {
+  width: 140px;
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  text-align: center;
+  padding: 10px;
+}
+
+.admin-product-content h3 {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.admin-product-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  flex-wrap: wrap;
+}
+
+.admin-product-category {
+  color: #ff8c8c;
+  font-size: 14px;
+  margin: 0;
+}
+
+.admin-stock-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 0, 0, 0.10);
+  border: 1px solid rgba(255, 59, 59, 0.25);
+  color: #ffd0d0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-product-desc {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.65;
+}
+
+.admin-product-meta {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.admin-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.admin-danger-btn {
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s;
+  border: none;
+  background: linear-gradient(135deg, #641111, #a30000);
+  color: #ffffff;
+}
+
+.admin-danger-btn:hover {
+  transform: translateY(-2px);
+}
+
+.admin-empty-box {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.66);
+  text-align: center;
+  padding: 20px;
+}
+
+@media (max-width: 1100px) {
+  .admin-panel-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .product-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-image-wrap {
+    width: 100%;
+    height: 220px;
+  }
+}
