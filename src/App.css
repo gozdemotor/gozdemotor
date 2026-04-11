@@ -1209,7 +1209,6 @@
   }
 }
 
-/* MOBİL HEADER DÜZELTMESİ */
 @media (max-width: 900px) {
   .header-inner {
     display: flex;
@@ -1224,24 +1223,37 @@
   }
 
   .nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
   }
 
   .nav a,
   .nav-cart-link,
   .nav-admin-link {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     min-height: 42px;
-    padding: 10px 12px;
-    font-size: 13px;
-    line-height: 1;
-    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    padding: 10px 8px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: normal;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .nav-cart-link {
+    gap: 6px;
+  }
+
+  .cart-count-badge {
+    min-width: 20px;
+    height: 20px;
+    font-size: 11px;
   }
 }
 
@@ -1259,21 +1271,9 @@
     height: 220px;
   }
 
-  .nav {
-    gap: 8px;
-  }
-
-  .nav a,
-  .nav-cart-link,
-  .nav-admin-link {
-    font-size: 12px;
-    padding: 9px 10px;
-  }
-
-  .cart-count-badge {
-    min-width: 20px;
-    height: 20px;
-    font-size: 11px;
+  .brand-logo {
+    max-width: 170px;
+    height: auto;
   }
 }
 
@@ -1287,28 +1287,41 @@
   }
 
   .brand-logo {
-    max-width: 160px;
+    max-width: 150px;
     height: auto;
   }
 
   .nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .nav a,
+  .nav-cart-link,
+  .nav-admin-link {
+    min-height: 40px;
+    padding: 8px 6px;
+    font-size: 11px;
+    border-radius: 12px;
+  }
+
+  .nav-cart-link .cart-count-badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+}
+
+/* iOS Safari için ekstra güvenlik */
+@supports (-webkit-touch-callout: none) {
+  .nav {
     width: 100%;
   }
 
   .nav a,
   .nav-cart-link,
   .nav-admin-link {
-    width: 100%;
-    min-width: 0;
-    text-align: center;
-    padding: 10px 8px;
-    font-size: 12px;
-  }
-
-  .nav-cart-link {
-    gap: 6px;
+    -webkit-appearance: none;
+    appearance: none;
   }
 }
