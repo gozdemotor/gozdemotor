@@ -17,6 +17,122 @@ function Reveal({ children, delay = 0 }) {
   );
 }
 
+function SiteHeader() {
+  return (
+    <header className="header">
+      <div className="container header-inner">
+        <Link to="/" className="brand">
+          <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
+        </Link>
+
+        <nav className="nav">
+          <Link to="/">Ana Sayfa</Link>
+          <Link to="/urunler">Ürünler</Link>
+          <a href="/#avantajlar">Neden Biz</a>
+          <a href="/#iletisim">İletişim</a>
+          <Link to="/admin/login" className="nav-admin-link">
+            Admin
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function ProductsSection({ products, selectedCategory, setSelectedCategory }) {
+  const categories = useMemo(() => {
+    const dynamicCategories = products
+      .map((item) => item.category)
+      .filter((item) => item && item.trim() !== "");
+
+    return ["Tümü", ...new Set(dynamicCategories)];
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "Tümü") return products;
+    return products.filter((item) => item.category === selectedCategory);
+  }, [products, selectedCategory]);
+
+  return (
+    <section className="section" id="urunler">
+      <div className="container">
+        <Reveal>
+          <div className="section-top">
+            <span className="section-mini">ÜRÜN VİTRİNİ</span>
+            <h2>En çok sorulan ürün grupları</h2>
+          </div>
+        </Reveal>
+
+        <div className="products-layout">
+          <Reveal delay={100}>
+            <aside className="category-sidebar">
+              <h3>Kategoriler</h3>
+
+              <div className="category-list">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    className={
+                      selectedCategory === category
+                        ? "category-btn active"
+                        : "category-btn"
+                    }
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </aside>
+          </Reveal>
+
+          <div className="products-content">
+            <div className="product-grid">
+              {filteredProducts.map((item, index) => (
+                <Reveal key={item.id || item.name || index} delay={80 + index * 70}>
+                  <div className="product-card animated-product-card">
+                    <div className="product-image-wrap">
+                      <img src={item.img} alt={item.name} className="product-img" />
+                    </div>
+
+                    <div className="product-content">
+                      <h3>{item.name}</h3>
+                      <p>
+                        {item.description ||
+                          "Gözde Motor güvencesiyle satış ve hızlı destek."}
+                      </p>
+
+                      {item.price !== undefined &&
+                      item.price !== null &&
+                      item.price !== "" ? (
+                        <p className="product-price">
+                          Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
+                        </p>
+                      ) : null}
+
+                      {item.stock !== undefined &&
+                      item.stock !== null &&
+                      item.stock !== "" ? (
+                        <p className="product-stock">Stok: {item.stock}</p>
+                      ) : null}
+
+                      {item.category ? (
+                        <p className="product-category-inline">
+                          Kategori: {item.category}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HomePage() {
   const [products, setProducts] = useState([
     { name: "Motor Yağları", img: "/yag.jpg" },
@@ -59,40 +175,11 @@ function HomePage() {
     getProducts();
   }, []);
 
-  const categories = useMemo(() => {
-    const dynamicCategories = products
-      .map((item) => item.category)
-      .filter((item) => item && item.trim() !== "");
-
-    return ["Tümü", ...new Set(dynamicCategories)];
-  }, [products]);
-
-  const filteredProducts = useMemo(() => {
-    if (selectedCategory === "Tümü") return products;
-    return products.filter((item) => item.category === selectedCategory);
-  }, [products, selectedCategory]);
-
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
 
-      <header className="header">
-        <div className="container header-inner">
-          <a href="#anasayfa" className="brand">
-            <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
-          </a>
-
-          <nav className="nav">
-            <a href="#anasayfa">Ana Sayfa</a>
-            <a href="#urunler">Ürünler</a>
-            <a href="#avantajlar">Neden Biz</a>
-            <a href="#iletisim">İletişim</a>
-            <Link to="/admin/login" className="nav-admin-link">
-              Admin
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="hero" id="anasayfa">
         <div className="hero-overlay"></div>
@@ -176,82 +263,11 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="urunler">
-        <div className="container">
-          <Reveal>
-            <div className="section-top">
-              <span className="section-mini">ÜRÜN VİTRİNİ</span>
-              <h2>En çok sorulan ürün grupları</h2>
-            </div>
-          </Reveal>
-
-          <div className="products-layout">
-            <Reveal delay={100}>
-              <aside className="category-sidebar">
-                <h3>Kategoriler</h3>
-
-                <div className="category-list">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      className={
-                        selectedCategory === category
-                          ? "category-btn active"
-                          : "category-btn"
-                      }
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </aside>
-            </Reveal>
-
-            <div className="products-content">
-              <div className="product-grid">
-                {filteredProducts.map((item, index) => (
-                  <Reveal key={item.id || item.name || index} delay={80 + index * 70}>
-                    <div className="product-card animated-product-card">
-                      <div className="product-image-wrap">
-                        <img src={item.img} alt={item.name} className="product-img" />
-                      </div>
-
-                      <div className="product-content">
-                        <h3>{item.name}</h3>
-                        <p>
-                          {item.description ||
-                            "Gözde Motor güvencesiyle satış ve hızlı destek."}
-                        </p>
-
-                        {item.price !== undefined &&
-                        item.price !== null &&
-                        item.price !== "" ? (
-                          <p className="product-price">
-                            Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
-                          </p>
-                        ) : null}
-
-                        {item.stock !== undefined &&
-                        item.stock !== null &&
-                        item.stock !== "" ? (
-                          <p className="product-stock">Stok: {item.stock}</p>
-                        ) : null}
-
-                        {item.category ? (
-                          <p className="product-category-inline">
-                            Kategori: {item.category}
-                          </p>
-                        ) : null}
-                      </div>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ProductsSection
+        products={products}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
 
       <section className="section section-dark" id="avantajlar">
         <div className="container split-grid">
@@ -348,10 +364,81 @@ function HomePage() {
   );
 }
 
+function ProductsPage() {
+  const [products, setProducts] = useState([
+    { name: "Motor Yağları", img: "/yag.jpg" },
+    { name: "Zincir Setleri", img: "/zincir.jpg" },
+    { name: "Kask ve Çanta", img: "/kask.jpg" },
+    { name: "Ampul ve Elektrik", img: "/ampul.jpg" },
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState("Tümü");
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const formattedProducts = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          img: item.image_url || "/yag.jpg",
+          description:
+            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
+          price: item.price,
+          stock: item.stock,
+          category: item.category,
+        }));
+
+        setProducts(formattedProducts);
+      }
+    };
+
+    getProducts();
+  }, []);
+
+  return (
+    <div className="site">
+      <div className="site-ambient-glow"></div>
+
+      <SiteHeader />
+
+      <section className="section">
+        <div className="container">
+          <Reveal>
+            <div className="section-top" style={{ marginTop: "40px" }}>
+              <span className="section-mini">AYRI SAYFA GÖRÜNÜMÜ</span>
+              <h2>Tüm Ürünler</h2>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <ProductsSection
+        products={products}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
+
+      <a
+        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+      >
+        WhatsApp
+      </a>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/urunler" element={<ProductsPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"
