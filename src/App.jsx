@@ -1,1094 +1,549 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Routes,
-  Route,
-  Navigate,
-  Link,
-  useParams,
-  useNavigate,
-} from "react-router-dom";
-import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
-import { supabase } from "./lib/supabase";
-import "./App.css";
+import { useEffect, useMemo, useState } from "react";
+import { ADMIN_EMAIL, supabase } from "./lib/supabase";
 
-const defaultProducts = [
-  {
-    id: "default-1",
-    name: "Motor Yağları",
-    img: "/yag.jpg",
-    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
-    price: "",
-    old_price: "",
+export default function App() {
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [adminOpen, setAdminOpen] = useState(false);
+
+  const [loginForm, setLoginForm] = useState({
+    email: "",
+    password: "",
+  });
+  const [loginError, setLoginError] = useState("");
+  const [loginBusy, setLoginBusy] = useState(false);
+
+  const [productForm, setProductForm] = useState({
+    name: "",
+    description: "",
+    category: "",
     stock: "",
-    category: "Yağ",
-    video_url: "",
-  },
-  {
-    id: "default-2",
-    name: "Zincir Setleri",
-    img: "/zincir.jpg",
-    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
+    purchase_price: "",
     price: "",
-    old_price: "",
-    stock: "",
-    category: "Zincir",
-    video_url: "",
-  },
-  {
-    id: "default-3",
-    name: "Kask ve Çanta",
-    img: "/kask.jpg",
-    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
-    price: "",
-    old_price: "",
-    stock: "",
-    category: "Aksesuar",
-    video_url: "",
-  },
-  {
-    id: "default-4",
-    name: "Ampul ve Elektrik",
-    img: "/ampul.jpg",
-    description: "Gözde Motor güvencesiyle satış ve hızlı destek.",
-    price: "",
-    old_price: "",
-    stock: "",
-    category: "Elektrik",
-    video_url: "",
-  },
-];
-
-function Reveal({ children, delay = 0 }) {
-  return (
-    <div className="reveal" style={{ animationDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  );
-}
-
-function buildWhatsappCartMessage(cartItems) {
-  if (!cartItems.length) {
-    return "Merhaba, sepetim hakkında bilgi almak istiyorum.";
-  }
-
-  const lines = cartItems.map((item, index) => {
-    const unitPrice = Number(item.price || 0);
-    const lineTotal = unitPrice * item.quantity;
-
-    return `${index + 1}. ${item.name} - Adet: ${item.quantity}${
-      unitPrice > 0
-        ? ` - Birim: ${unitPrice.toLocaleString("tr-TR")} TL - Tutar: ${lineTotal.toLocaleString("tr-TR")} TL`
-        : ""
-    }`;
+    image_url: "",
   });
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + Number(item.price || 0) * item.quantity,
-    0
-  );
+  const [saveBusy, setSaveBusy] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
-  return `Merhaba, sepetteki ürünlerim için bilgi almak istiyorum.%0A%0A${lines
-    .map((line) => line.replaceAll(" ", "%20"))
-    .join("%0A")}%0A%0AToplam:%20${total
-    .toLocaleString("tr-TR")
-    .replaceAll(".", "%2E")
-    .replaceAll(",", "%2C")}%20TL`;
-}
+  const isAdmin = session?.user?.email === ADMIN_EMAIL;
 
-function SiteHeader() {
-  return (
-    <header className="header">
-      <div className="container header-inner">
-        <Link to="/" className="brand">
-          <img src="/logo.png" alt="Gözde Motor Logo" className="brand-logo" />
-        </Link>
+  async function loadProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-        <nav className="nav">
-          <Link to="/">Ana Sayfa</Link>
-          <Link to="/urunler">Ürünler</Link>
-          <a href="/#avantajlar">Neden Biz</a>
-          <a href="/#iletisim">İletişim</a>
-        </nav>
-      </div>
-    </header>
-  );
-}
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-function FloatingCart({ cartCount, cartRef }) {
-  return (
-    <Link
-      to="/sepet"
-      className="floating-cart"
-      aria-label="Sepet"
-      ref={cartRef}
-    >
-      <span className="floating-cart-icon">🛒</span>
-      <span className="floating-cart-text">Sepet</span>
-      {cartCount > 0 ? (
-        <span className="floating-cart-count">{cartCount}</span>
-      ) : null}
-    </Link>
-  );
-}
+    setProducts(data || []);
+  }
 
-function ProductCard({ item, index = 0, addToCart }) {
-  const hasDiscount =
-    Number(item.old_price || 0) > Number(item.price || 0) &&
-    Number(item.price || 0) > 0;
+  useEffect(() => {
+    loadProducts();
 
-  const discountPercent = hasDiscount
-    ? Math.round(
-        ((Number(item.old_price) - Number(item.price)) / Number(item.old_price)) *
-          100
-      )
-    : 0;
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session ?? null);
+      setAuthLoading(false);
+    });
 
-  const cardRef = useRef(null);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession ?? null);
+    });
 
-  const handleMouseMove = (e) => {
-    if (!cardRef.current || window.innerWidth <= 900) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const rotateY = ((x / rect.width) - 0.5) * 10;
-    const rotateX = ((y / rect.height) - 0.5) * -10;
-
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
-  };
-
-  const handleMouseLeave = () => {
-    if (!cardRef.current) return;
-    cardRef.current.style.transform =
-      "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)";
-  };
-
-  return (
-    <Reveal delay={80 + index * 70}>
-      <div
-        ref={cardRef}
-        className="product-card animated-product-card product-card-tilt"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        {hasDiscount ? (
-          <div className="discount-badge">%{discountPercent} İndirim</div>
-        ) : null}
-
-        <Link to={`/urun/${item.id}`} className="product-card-link">
-          <div className="product-image-wrap">
-            <img src={item.img} alt={item.name} className="product-img" />
-          </div>
-
-          <div className="product-content">
-            <h3>{item.name}</h3>
-            <p>
-              {item.description ||
-                "Gözde Motor güvencesiyle satış ve hızlı destek."}
-            </p>
-
-            {hasDiscount ? (
-              <div className="product-price-stack">
-                <p className="product-old-price">
-                  {Number(item.old_price).toLocaleString("tr-TR")} TL
-                </p>
-                <p className="product-price">
-                  Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
-                </p>
-              </div>
-            ) : item.price !== undefined &&
-              item.price !== null &&
-              item.price !== "" ? (
-              <p className="product-price">
-                Fiyat: {Number(item.price).toLocaleString("tr-TR")} TL
-              </p>
-            ) : null}
-
-            {item.stock !== undefined &&
-            item.stock !== null &&
-            item.stock !== "" ? (
-              <p className="product-stock">Stok: {item.stock}</p>
-            ) : null}
-
-            {item.category ? (
-              <p className="product-category-inline">
-                Kategori: {item.category}
-              </p>
-            ) : null}
-
-            {item.video_url ? (
-              <p className="product-video-inline">Video mevcut</p>
-            ) : null}
-          </div>
-        </Link>
-
-        <div className="product-card-actions">
-          <Link to={`/urun/${item.id}`} className="product-detail-btn">
-            Ürünü İncele
-          </Link>
-
-          <button
-            type="button"
-            className="product-cart-btn"
-            onClick={(e) => addToCart(item, e.currentTarget)}
-          >
-            Sepete Ekle
-          </button>
-        </div>
-      </div>
-    </Reveal>
-  );
-}
-
-function ProductsSection({
-  products,
-  selectedCategory,
-  setSelectedCategory,
-  addToCart,
-}) {
-  const categories = useMemo(() => {
-    const dynamicCategories = products
-      .map((item) => item.category)
-      .filter((item) => item && item.trim() !== "");
-
-    return ["Tümü", ...new Set(dynamicCategories)];
-  }, [products]);
+    return () => subscription.unsubscribe();
+  }, []);
 
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === "Tümü") return products;
-    return products.filter((item) => item.category === selectedCategory);
-  }, [products, selectedCategory]);
+    const q = search.trim().toLowerCase();
+    if (!q) return products;
 
-  return (
-    <section className="section" id="urunler">
-      <div className="container">
-        <Reveal>
-          <div className="section-top">
-            <span className="section-mini">ÜRÜN VİTRİNİ</span>
-            <h2>En çok sorulan ürün grupları</h2>
-          </div>
-        </Reveal>
+    return products.filter((product) => {
+      return (
+        (product.name || "").toLowerCase().includes(q) ||
+        (product.category || "").toLowerCase().includes(q) ||
+        (product.description || "").toLowerCase().includes(q)
+      );
+    });
+  }, [products, search]);
 
-        <div className="products-layout">
-          <Reveal delay={100}>
-            <aside className="category-sidebar">
-              <h3>Kategoriler</h3>
+  function handleLoginChange(e) {
+    const { name, value } = e.target;
+    setLoginForm((prev) => ({ ...prev, [name]: value }));
+  }
 
-              <div className="category-list">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    className={
-                      selectedCategory === category
-                        ? "category-btn active"
-                        : "category-btn"
-                    }
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </aside>
-          </Reveal>
+  async function handleLogin(e) {
+    e.preventDefault();
+    setLoginBusy(true);
+    setLoginError("");
 
-          <div className="products-content">
-            <div className="product-grid">
-              {filteredProducts.map((item, index) => (
-                <ProductCard
-                  key={item.id || item.name || index}
-                  item={item}
-                  index={index}
-                  addToCart={addToCart}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginForm.email,
+      password: loginForm.password,
+    });
 
-function HomePage({ products, addToCart, cartCount, cartRef }) {
-  const [selectedCategory, setSelectedCategory] = useState("Tümü");
+    setLoginBusy(false);
 
-  const features = [
-    "Hızlı parça temini",
-    "Esnaf işi güven",
-    "Şuhut içi kolay ulaşım",
-    "Türkiye geneli gönderim",
-  ];
+    if (error) {
+      setLoginError("Giriş başarısız. Mail veya şifre yanlış olabilir.");
+      return;
+    }
+
+    if (loginForm.email !== ADMIN_EMAIL) {
+      await supabase.auth.signOut();
+      setLoginError("Bu hesap admin yetkili değil.");
+      return;
+    }
+
+    setLoginForm({ email: "", password: "" });
+    setAdminOpen(true);
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setAdminOpen(false);
+  }
+
+  function handleProductChange(e) {
+    const { name, value } = e.target;
+    setProductForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleAddProduct(e) {
+    e.preventDefault();
+    setSaveBusy(true);
+    setSaveError("");
+
+    try {
+      const payload = {
+        name: productForm.name.trim(),
+        description: productForm.description.trim(),
+        category: productForm.category.trim() || "Genel",
+        stock: Number(productForm.stock || 0),
+        purchase_price: Number(productForm.purchase_price || 0),
+        price: Number(productForm.price || 0),
+        image_url: productForm.image_url.trim(),
+      };
+
+      const { error } = await supabase.from("products").insert(payload);
+      if (error) throw error;
+
+      setProductForm({
+        name: "",
+        description: "",
+        category: "",
+        stock: "",
+        purchase_price: "",
+        price: "",
+        image_url: "",
+      });
+
+      await loadProducts();
+    } catch (err) {
+      console.error(err);
+      setSaveError("Ürün eklenemedi.");
+    } finally {
+      setSaveBusy(false);
+    }
+  }
+
+  async function handleDeleteProduct(id) {
+    const ok = window.confirm("Bu ürün silinsin mi?");
+    if (!ok) return;
+
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (error) {
+      alert("Ürün silinemedi.");
+      return;
+    }
+
+    await loadProducts();
+  }
+
+  async function handleStockChange(product, diff) {
+    const currentStock = Number(product.stock || 0);
+    const newStock = Math.max(0, currentStock + diff);
+
+    const { error } = await supabase
+      .from("products")
+      .update({ stock: newStock })
+      .eq("id", product.id);
+
+    if (error) {
+      alert("Stok güncellenemedi.");
+      return;
+    }
+
+    await supabase.from("stock_movements").insert({
+      product_id: product.id,
+      movement_type: diff >= 0 ? "GIRIS" : "CIKIS",
+      quantity: Math.abs(diff),
+      note: "Site admin paneli",
+    });
+
+    await loadProducts();
+  }
 
   return (
     <div className="site">
-      <div className="site-ambient-glow"></div>
+      <header className="header fade-in-down">
+        <div className="container header-inner">
+          <img src="/logo.png" className="brand-logo" alt="Gözde Motor Logo" />
 
-      <SiteHeader />
+          <nav className="nav">
+            <a href="#anasayfa">Ana Sayfa</a>
+            <a href="#urunler">Ürünler</a>
+            <a href="#admin">Admin</a>
+            <a href="#iletisim">İletişim</a>
+          </nav>
+        </div>
+      </header>
 
       <section className="hero" id="anasayfa">
         <div className="hero-overlay"></div>
         <div className="hero-bg-logo"></div>
 
-        <div className="container hero-grid">
-          <div className="hero-left">
-            <Reveal delay={0}>
-              <div className="hero-badge">Şuhut / Afyon</div>
-            </Reveal>
+        <div className="container hero-content">
+          <div className="hero-animate">
+            <h1>
+              Motoruna ne lazımsa <span>Gözde Motor</span>'da.
+            </h1>
 
-            <Reveal delay={120}>
-              <h1>
-                Motoruna ne lazımsa <span>Gözde Motor</span>'da.
-              </h1>
-            </Reveal>
+            <p>
+              Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
+              motosiklet mağazası.
+            </p>
 
-            <Reveal delay={240}>
-              <p>
-                Yedek parça, aksesuar ve servis çözümlerini tek noktada sunan modern
-                motosiklet mağazası. Güçlü vitrin, hızlı iletişim ve güven veren hizmet.
-              </p>
-            </Reveal>
+            <div className="buttons">
+              <a
+                href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20%C3%BCr%C3%BCn%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                className="btn primary"
+              >
+                WhatsApp'tan Yaz
+              </a>
 
-            <Reveal delay={360}>
-              <div className="hero-actions">
-                <a
-                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20par%C3%A7a%20sormak%20istiyorum."
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-primary"
-                >
-                  WhatsApp'tan Yaz
-                </a>
+              <a href="tel:05437182017" className="btn secondary">
+                Hemen Ara
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                <a href="tel:05437182017" className="btn btn-secondary">
-                  Hemen Ara
-                </a>
-              </div>
-            </Reveal>
+      <section className="section fade-in-up" id="urunler">
+        <div className="container">
+          <div className="section-head">
+            <div>
+              <span className="section-kicker">ÜRÜNLER</span>
+              <h2>Ürün Vitrini</h2>
+            </div>
 
-            <Reveal delay={480}>
-              <div className="stats">
-                <div className="stat-card">
-                  <strong>Parça</strong>
-                  <span>Geniş ürün grubu</span>
-                </div>
-                <div className="stat-card">
-                  <strong>Servis</strong>
-                  <span>Pratik çözüm</span>
-                </div>
-                <div className="stat-card">
-                  <strong>Kargo</strong>
-                  <span>Türkiye geneli</span>
-                </div>
-              </div>
-            </Reveal>
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Ürün ara..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
 
-          <Reveal delay={260}>
-            <div className="hero-card hero-card-animated">
-              <div className="panel-label">GÖZDE MOTOR</div>
-              <h2>Motor & Yedek Parça Merkezi</h2>
-              <p>
-                WhatsApp, Instagram ve mağaza satışını bir araya getiren modern vitrin
-                sitesi. Siyah-kırmızı güçlü görünüm, net ürün yapısı ve kolay iletişim.
-              </p>
+          <div className="product-grid">
+            {filteredProducts.length === 0 ? (
+              <div className="empty-state">Aramana uygun ürün bulunamadı.</div>
+            ) : (
+              filteredProducts.map((product) => (
+                <div className="product-card card-animate" key={product.id}>
+                  <img
+                    src={product.image_url || "/yag.jpg"}
+                    className="product-img"
+                    alt={product.name}
+                    onError={(e) => {
+                      e.currentTarget.src = "/yag.jpg";
+                    }}
+                  />
 
-              <ul className="hero-list">
-                <li>Motor yedek parça satışı</li>
-                <li>Aksesuar ve ekipman ürünleri</li>
-                <li>Servis ve tamir desteği</li>
-                <li>Hızlı müşteri iletişimi</li>
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+                  <div className="product-body">
+                    <div className="product-category">{product.category || "Genel"}</div>
+                    <h3>{product.name}</h3>
 
-      <ProductsSection
-        products={products}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        addToCart={addToCart}
-      />
-
-      <section className="section section-dark" id="avantajlar">
-        <div className="container split-grid">
-          <Reveal delay={60}>
-            <div className="info-box animated-box">
-              <span className="section-mini">NEDEN BİZ?</span>
-              <h2>Müşterinin işini uzatmayan dükkan</h2>
-
-              <div className="feature-list">
-                {features.map((item, index) => (
-                  <div
-                    className="feature-item feature-animated"
-                    key={item}
-                    style={{ animationDelay: `${index * 0.08}s` }}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <div className="contact-box animated-box">
-              <span className="section-mini">HIZLI İLETİŞİM</span>
-              <h2>Bir mesaj kadar yakınız</h2>
-              <p>
-                Parça sor, fiyat al, ürün fotoğrafı iste. Hızlıca dönüş yapalım.
-              </p>
-
-              <div className="contact-buttons">
-                <a
-                  href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-primary"
-                >
-                  WhatsApp
-                </a>
-
-                <a
-                  href="https://instagram.com/gozdemotortr"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-secondary"
-                >
-                  Instagram
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="section" id="iletisim">
-        <div className="container contact-main">
-          <Reveal delay={60}>
-            <div className="contact-left animated-box">
-              <span className="section-mini">İLETİŞİM</span>
-              <h2>Gözde Motor</h2>
-
-              <div className="contact-lines">
-                <p>📍 Şuhut / Afyon</p>
-                <p>📞 0543 718 20 17</p>
-                <p>📷 @gozdemotortr</p>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <div className="contact-right map-animated">
-              <iframe
-                src="https://www.google.com/maps?q=Şuhut%20Afyon&output=embed"
-                width="100%"
-                height="250"
-                style={{ border: 0, borderRadius: "18px" }}
-                loading="lazy"
-                title="Gözde Motor Konum"
-              ></iframe>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
-
-      <a
-        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-        target="_blank"
-        rel="noreferrer"
-        className="floating-whatsapp"
-      >
-        WhatsApp
-      </a>
-    </div>
-  );
-}
-
-function ProductsPage({ products, addToCart, cartCount, cartRef }) {
-  const [selectedCategory, setSelectedCategory] = useState("Tümü");
-
-  return (
-    <div className="site">
-      <div className="site-ambient-glow"></div>
-
-      <SiteHeader />
-
-      <section className="section">
-        <div className="container">
-          <Reveal>
-            <div className="section-top" style={{ marginTop: "40px" }}>
-              <span className="section-mini">AYRI SAYFA GÖRÜNÜMÜ</span>
-              <h2>Tüm Ürünler</h2>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <ProductsSection
-        products={products}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        addToCart={addToCart}
-      />
-
-      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
-
-      <a
-        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-        target="_blank"
-        rel="noreferrer"
-        className="floating-whatsapp"
-      >
-        WhatsApp
-      </a>
-    </div>
-  );
-}
-
-function ProductDetailPage({ products, addToCart, cartCount, cartRef }) {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const product = products.find((item) => String(item.id) === String(id));
-
-  const hasDiscount =
-    product &&
-    Number(product.old_price || 0) > Number(product.price || 0) &&
-    Number(product.price || 0) > 0;
-
-  const convertYoutubeUrl = (url) => {
-    if (!url) return "";
-
-    const cleanUrl = url.trim();
-
-    if (cleanUrl.includes("youtu.be/")) {
-      const videoId = cleanUrl.split("youtu.be/")[1].split("?")[0].split("/")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    if (cleanUrl.includes("/shorts/")) {
-      const videoId = cleanUrl.split("/shorts/")[1].split("?")[0].split("/")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    if (cleanUrl.includes("watch?v=")) {
-      const videoId = cleanUrl.split("watch?v=")[1].split("&")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    if (cleanUrl.includes("/embed/")) {
-      return cleanUrl;
-    }
-
-    return cleanUrl;
-  };
-
-  const normalizedYoutubeUrl = convertYoutubeUrl(product?.video_url);
-
-  const isYoutubeSource =
-    normalizedYoutubeUrl.includes("youtube.com") ||
-    normalizedYoutubeUrl.includes("youtu.be");
-
-  return (
-    <div className="site">
-      <div className="site-ambient-glow"></div>
-
-      <SiteHeader />
-
-      <section className="section product-detail-page">
-        <div className="container">
-          {!product ? (
-            <div className="product-detail-box">
-              <h2>Ürün bulunamadı</h2>
-              <div className="detail-actions">
-                <button className="btn btn-secondary" onClick={() => navigate("/urunler")}>
-                  Ürünlere Dön
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Reveal>
-              <div className="product-detail-box">
-                <div className="product-detail-grid">
-                  <div className="product-detail-image-wrap">
-                    <img
-                      src={product.img}
-                      alt={product.name}
-                      className="product-img product-detail-image"
-                    />
-                  </div>
-
-                  <div className="product-detail-content">
-                    <span className="section-mini">ÜRÜN DETAYI</span>
-                    <h1>{product.name}</h1>
-
-                    {product.category ? (
-                      <p className="product-detail-category">
-                        Kategori: {product.category}
-                      </p>
+                    {product.description ? (
+                      <p className="product-description">{product.description}</p>
                     ) : null}
 
-                    <p className="product-detail-description">
-                      {product.description}
-                    </p>
-
-                    {hasDiscount ? (
-                      <div className="product-detail-price-stack">
-                        <div className="product-detail-old-price">
-                          {Number(product.old_price).toLocaleString("tr-TR")} TL
-                        </div>
-                        <div className="product-detail-price">
-                          {Number(product.price).toLocaleString("tr-TR")} TL
-                        </div>
-                      </div>
-                    ) : product.price !== undefined &&
-                      product.price !== null &&
-                      product.price !== "" ? (
-                      <div className="product-detail-price">
-                        {Number(product.price).toLocaleString("tr-TR")} TL
-                      </div>
-                    ) : null}
-
-                    {product.stock !== undefined &&
-                    product.stock !== null &&
-                    product.stock !== "" ? (
-                      <div className="product-detail-stock">
-                        Stok: {product.stock}
-                      </div>
-                    ) : null}
-
-                    <div className="detail-actions">
-                      <button
-                        className="btn btn-primary"
-                        onClick={(e) => addToCart(product, e.currentTarget)}
-                      >
-                        Sepete Ekle
-                      </button>
-
+                    {!isAdmin ? (
                       <a
-                        href={`https://wa.me/905437182017?text=Merhaba%20${encodeURIComponent(
-                          product.name
-                        )}%20ürünü%20hakkında%20bilgi%20alabilir%20miyim?`}
+                        href={`https://wa.me/905437182017?text=${encodeURIComponent(
+                          `Merhaba Gözde Motor, ${product.name} ürünü hakkında bilgi almak istiyorum.`
+                        )}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn btn-secondary"
+                        className="mini-btn"
                       >
-                        WhatsApp ile Sor
+                        Bilgi Al
                       </a>
-
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => navigate("/urunler")}
-                      >
-                        Ürünlere Dön
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {product.video_url ? (
-                  <div className="product-video-section">
-                    <h3>Ürün Videosu</h3>
-
-                    <div className="product-video-box">
-                      {isYoutubeSource ? (
-                        <iframe
-                          src={normalizedYoutubeUrl}
-                          title={product.name}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                        ></iframe>
-                      ) : (
-                        <video controls src={product.video_url}>
-                          Tarayıcı video oynatmayı desteklemiyor.
-                        </video>
-                      )}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </Reveal>
-          )}
-        </div>
-      </section>
-
-      <FloatingCart cartCount={cartCount} cartRef={cartRef} />
-
-      <a
-        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
-        target="_blank"
-        rel="noreferrer"
-        className="floating-whatsapp"
-      >
-        WhatsApp
-      </a>
-    </div>
-  );
-}
-
-function CartPage({
-  cartItems,
-  increaseQuantity,
-  decreaseQuantity,
-  removeFromCart,
-  cartTotal,
-}) {
-  const whatsappLink = `https://wa.me/905437182017?text=${buildWhatsappCartMessage(
-    cartItems
-  )}`;
-
-  return (
-    <div className="site">
-      <div className="site-ambient-glow"></div>
-
-      <SiteHeader />
-
-      <section className="section cart-page">
-        <div className="container">
-          <Reveal>
-            <div className="section-top" style={{ marginTop: "40px" }}>
-              <span className="section-mini">SEPET</span>
-              <h2>Sepetim</h2>
-            </div>
-          </Reveal>
-
-          <div className="cart-layout">
-            <div className="cart-items-box">
-              {cartItems.length === 0 ? (
-                <div className="cart-empty-box">
-                  Sepetinde henüz ürün yok.
-                </div>
-              ) : (
-                <div className="cart-item-list">
-                  {cartItems.map((item, index) => (
-                    <Reveal key={item.id} delay={index * 60}>
-                      <div className="cart-item-card">
-                        <div className="cart-item-image-wrap">
-                          <img
-                            src={item.img}
-                            alt={item.name}
-                            className="cart-item-image"
-                          />
+                    ) : (
+                      <div className="admin-product-box">
+                        <div className="admin-product-line">
+                          <span>Stok:</span>
+                          <strong>{product.stock ?? 0}</strong>
+                        </div>
+                        <div className="admin-product-line">
+                          <span>Alış:</span>
+                          <strong>{product.purchase_price ?? 0} TL</strong>
+                        </div>
+                        <div className="admin-product-line">
+                          <span>Satış:</span>
+                          <strong>{product.price ?? 0} TL</strong>
                         </div>
 
-                        <div className="cart-item-content">
-                          <h3>{item.name}</h3>
-
-                          {item.category ? (
-                            <p className="cart-item-category">
-                              Kategori: {item.category}
-                            </p>
-                          ) : null}
-
-                          {item.price !== undefined &&
-                          item.price !== null &&
-                          item.price !== "" ? (
-                            <p className="cart-item-price">
-                              {Number(item.price).toLocaleString("tr-TR")} TL
-                            </p>
-                          ) : null}
-
-                          <div className="cart-quantity-row">
-                            <button
-                              className="qty-btn"
-                              onClick={() => decreaseQuantity(item.id)}
-                            >
-                              -
-                            </button>
-
-                            <span className="qty-value">{item.quantity}</span>
-
-                            <button
-                              className="qty-btn"
-                              onClick={() => increaseQuantity(item.id)}
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="cart-item-side">
-                          <div className="cart-line-total">
-                            {(Number(item.price || 0) * item.quantity).toLocaleString(
-                              "tr-TR"
-                            )}{" "}
-                            TL
-                          </div>
-
+                        <div className="stock-actions">
                           <button
-                            className="remove-cart-btn"
-                            onClick={() => removeFromCart(item.id)}
+                            type="button"
+                            className="mini-admin-btn"
+                            onClick={() => handleStockChange(product, 1)}
+                          >
+                            +1
+                          </button>
+                          <button
+                            type="button"
+                            className="mini-admin-btn"
+                            onClick={() => handleStockChange(product, -1)}
+                          >
+                            -1
+                          </button>
+                          <button
+                            type="button"
+                            className="mini-delete-btn"
+                            onClick={() => handleDeleteProduct(product.id)}
                           >
                             Sil
                           </button>
                         </div>
                       </div>
-                    </Reveal>
-                  ))}
+                    )}
+                  </div>
                 </div>
-              )}
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-dark fade-in-up" id="admin">
+        <div className="container">
+          <div className="admin-top">
+            <div>
+              <span className="section-kicker">ADMİN PANEL</span>
+              <h2>Ürün Yönetimi</h2>
             </div>
 
-            <div className="cart-summary-box">
-              <h3>Sepet Özeti</h3>
+            {isAdmin ? (
+              <div className="admin-top-buttons">
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={() => setAdminOpen((prev) => !prev)}
+                >
+                  {adminOpen ? "Paneli Kapat" : "Paneli Aç"}
+                </button>
 
-              <div className="cart-summary-row">
-                <span>Toplam Ürün</span>
-                <strong>
-                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-                </strong>
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={handleLogout}
+                >
+                  Çıkış Yap
+                </button>
               </div>
+            ) : null}
+          </div>
 
-              <div className="cart-summary-row">
-                <span>Toplam Tutar</span>
-                <strong>{cartTotal.toLocaleString("tr-TR")} TL</strong>
+          {!authLoading && !isAdmin ? (
+            <form className="admin-login-card" onSubmit={handleLogin}>
+              <h3>Admin Girişi</h3>
+              <p>Sadece yetkili hesap giriş yapabilir.</p>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Admin e-posta"
+                value={loginForm.email}
+                onChange={handleLoginChange}
+              />
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Şifre"
+                value={loginForm.password}
+                onChange={handleLoginChange}
+              />
+
+              {loginError ? <div className="login-error">{loginError}</div> : null}
+
+              <button type="submit" className="btn primary" disabled={loginBusy}>
+                {loginBusy ? "Giriş yapılıyor..." : "Giriş Yap"}
+              </button>
+            </form>
+          ) : null}
+
+          {isAdmin && adminOpen ? (
+            <div className="admin-grid">
+              <form className="admin-card" onSubmit={handleAddProduct}>
+                <h3>Yeni Ürün Ekle</h3>
+
+                <label>
+                  Ürün Adı
+                  <input
+                    type="text"
+                    name="name"
+                    value={productForm.name}
+                    onChange={handleProductChange}
+                    placeholder="Örn: Fren Balata"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Açıklama
+                  <input
+                    type="text"
+                    name="description"
+                    value={productForm.description}
+                    onChange={handleProductChange}
+                    placeholder="Örn: Cup arka fren takımı"
+                  />
+                </label>
+
+                <label>
+                  Kategori
+                  <input
+                    type="text"
+                    name="category"
+                    value={productForm.category}
+                    onChange={handleProductChange}
+                    placeholder="Örn: Fren"
+                  />
+                </label>
+
+                <label>
+                  Stok
+                  <input
+                    type="number"
+                    name="stock"
+                    value={productForm.stock}
+                    onChange={handleProductChange}
+                    placeholder="Örn: 12"
+                  />
+                </label>
+
+                <label>
+                  Alış Fiyatı
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="purchase_price"
+                    value={productForm.purchase_price}
+                    onChange={handleProductChange}
+                    placeholder="Örn: 120"
+                  />
+                </label>
+
+                <label>
+                  Satış Fiyatı
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="price"
+                    value={productForm.price}
+                    onChange={handleProductChange}
+                    placeholder="Örn: 180"
+                  />
+                </label>
+
+                <label>
+                  Görsel URL
+                  <input
+                    type="text"
+                    name="image_url"
+                    value={productForm.image_url}
+                    onChange={handleProductChange}
+                    placeholder="/yag.jpg veya resim linki"
+                  />
+                </label>
+
+                {saveError ? <div className="login-error">{saveError}</div> : null}
+
+                <div className="admin-actions">
+                  <button type="submit" className="btn primary" disabled={saveBusy}>
+                    {saveBusy ? "Kaydediliyor..." : "Ürünü Ekle"}
+                  </button>
+                </div>
+              </form>
+
+              <div className="admin-card">
+                <h3>Yönetim Bilgisi</h3>
+                <p className="admin-note">
+                  Müşteri sadece ürün adı, kategori, görsel ve bilgi al butonunu görür.
+                  Stok ve fiyat bilgileri sadece admin girişinde görünür.
+                </p>
               </div>
-
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary cart-order-btn"
-              >
-                WhatsApp ile Sipariş Sor
-              </a>
-
-              <Link to="/urunler" className="btn btn-secondary cart-order-btn">
-                Alışverişe Devam Et
-              </Link>
             </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="section fade-in-up" id="iletisim">
+        <div className="container contact-box">
+          <div>
+            <span className="section-kicker">İLETİŞİM</span>
+            <h2>Gözde Motor</h2>
+            <p>Şuhut / Afyon</p>
+            <p>0543 718 20 17</p>
+            <p>@gozdemotortr</p>
+          </div>
+
+          <div className="contact-buttons">
+            <a
+              href="https://instagram.com/gozdemotortr"
+              target="_blank"
+              rel="noreferrer"
+              className="btn secondary"
+            >
+              Instagram
+            </a>
+
+            <a
+              href="https://wa.me/905437182017"
+              target="_blank"
+              rel="noreferrer"
+              className="btn primary"
+            >
+              WhatsApp
+            </a>
           </div>
         </div>
       </section>
 
       <a
-        href="https://wa.me/905437182017?text=Merhaba%20G%C3%B6zde%20Motor%2C%20bilgi%20almak%20istiyorum."
+        href="https://wa.me/905437182017"
         target="_blank"
         rel="noreferrer"
-        className="floating-whatsapp"
+        className="whatsapp"
       >
         WhatsApp
       </a>
     </div>
-  );
-}
-
-export default function App() {
-  const [products, setProducts] = useState(defaultProducts);
-  const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem("gozde-motor-cart");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const cartRef = useRef(null);
-
-  useEffect(() => {
-    const getProducts = async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("PRODUCTS FETCH ERROR:", error);
-        return;
-      }
-
-      if (Array.isArray(data)) {
-        const formattedProducts = data.map((item) => ({
-          id: item.id,
-          name: item.name,
-          img: item.image_url || "/yag.jpg",
-          description:
-            item.description || "Gözde Motor güvencesiyle satış ve hızlı destek.",
-          price: item.price,
-          old_price: item.old_price,
-          stock: item.stock,
-          category: item.category,
-          video_url: item.video_url || "",
-        }));
-
-        if (formattedProducts.length > 0) {
-          setProducts(formattedProducts);
-        } else {
-          setProducts(defaultProducts);
-        }
-      }
-    };
-
-    getProducts();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("gozde-motor-cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const animateToCart = (triggerElement) => {
-    if (!triggerElement || !cartRef.current) return;
-
-    const productCard = triggerElement.closest(".product-card");
-    const detailBox = triggerElement.closest(".product-detail-box");
-
-    const sourceImage =
-      productCard?.querySelector(".product-img") ||
-      detailBox?.querySelector(".product-detail-image");
-
-    if (!sourceImage) return;
-
-    const sourceRect = sourceImage.getBoundingClientRect();
-    const cartRect = cartRef.current.getBoundingClientRect();
-
-    const flyingImage = sourceImage.cloneNode(true);
-    flyingImage.classList.add("flying-cart-image");
-
-    flyingImage.style.position = "fixed";
-    flyingImage.style.left = `${sourceRect.left}px`;
-    flyingImage.style.top = `${sourceRect.top}px`;
-    flyingImage.style.width = `${sourceRect.width}px`;
-    flyingImage.style.height = `${sourceRect.height}px`;
-    flyingImage.style.borderRadius = "18px";
-    flyingImage.style.objectFit = "cover";
-    flyingImage.style.pointerEvents = "none";
-    flyingImage.style.zIndex = "9999";
-    flyingImage.style.transition =
-      "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease, width 0.8s ease, height 0.8s ease, left 0.8s ease, top 0.8s ease, border-radius 0.8s ease";
-    flyingImage.style.boxShadow = "0 16px 40px rgba(0,0,0,0.35)";
-
-    document.body.appendChild(flyingImage);
-
-    const targetLeft = cartRect.left + cartRect.width / 2 - 20;
-    const targetTop = cartRect.top + cartRect.height / 2 - 20;
-
-    requestAnimationFrame(() => {
-      flyingImage.style.left = `${targetLeft}px`;
-      flyingImage.style.top = `${targetTop}px`;
-      flyingImage.style.width = "40px";
-      flyingImage.style.height = "40px";
-      flyingImage.style.borderRadius = "999px";
-      flyingImage.style.opacity = "0.25";
-      flyingImage.style.transform = "scale(0.35) rotate(12deg)";
-    });
-
-    setTimeout(() => {
-      flyingImage.remove();
-      cartRef.current?.classList.add("cart-bump");
-      setTimeout(() => {
-        cartRef.current?.classList.remove("cart-bump");
-      }, 450);
-    }, 820);
-  };
-
-  const addToCart = (product, triggerElement = null) => {
-    animateToCart(triggerElement);
-
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-
-      return [...prev, { ...product, quantity: 1 }];
-    });
-  };
-
-  const increaseQuantity = (id) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const decreaseQuantity = (id) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
-
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const cartTotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.price || 0) * item.quantity,
-    0
-  );
-
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <HomePage
-            products={products}
-            addToCart={addToCart}
-            cartCount={cartCount}
-            cartRef={cartRef}
-          />
-        }
-      />
-      <Route
-        path="/urunler"
-        element={
-          <ProductsPage
-            products={products}
-            addToCart={addToCart}
-            cartCount={cartCount}
-            cartRef={cartRef}
-          />
-        }
-      />
-      <Route
-        path="/urun/:id"
-        element={
-          <ProductDetailPage
-            products={products}
-            addToCart={addToCart}
-            cartCount={cartCount}
-            cartRef={cartRef}
-          />
-        }
-      />
-      <Route
-        path="/sepet"
-        element={
-          <CartPage
-            cartItems={cartItems}
-            increaseQuantity={increaseQuantity}
-            decreaseQuantity={decreaseQuantity}
-            removeFromCart={removeFromCart}
-            cartTotal={cartTotal}
-          />
-        }
-      />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedAdminRoute>
-            <AdminDashboard />
-          </ProtectedAdminRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
   );
 }
