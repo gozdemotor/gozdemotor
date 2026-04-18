@@ -207,11 +207,6 @@ function ProductCard({ item, index = 0, addToCart }) {
               </p>
             ) : null}
 
-            {item.stock !== undefined &&
-            item.stock !== null &&
-            item.stock !== "" ? (
-              <p className="product-stock">Stok: {item.stock}</p>
-            ) : null}
 
             {item.category ? (
               <p className="product-category-inline">
@@ -656,13 +651,6 @@ function ProductDetailPage({ products, addToCart, cartCount, cartRef }) {
                       </div>
                     ) : null}
 
-                    {product.stock !== undefined &&
-                    product.stock !== null &&
-                    product.stock !== "" ? (
-                      <div className="product-detail-stock">
-                        Stok: {product.stock}
-                      </div>
-                    ) : null}
 
                     <div className="detail-actions">
                       <button
