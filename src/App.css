@@ -1716,3 +1716,21 @@
     font-size: 28px;
   }
 }
+/* ===== ÜRÜN DETAY FOTOĞRAF FULL GÖRÜNSÜN FIX ===== */
+
+.product-detail-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.product-detail-image {
+  width: 100%;
+  height: auto !important;
+  max-height: 520px;
+  object-fit: contain !important;
+  background: #000;
+}
