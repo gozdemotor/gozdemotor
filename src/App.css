@@ -1953,3 +1953,46 @@
     margin-bottom: 14px;
   }
 }
+
+
+
+/* ===== SIRALAMA SELECT GÖRÜNÜM FIX ===== */
+.products-sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  min-height: 50px;
+  padding: 0 44px 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 59, 59, 0.32);
+  background:
+    linear-gradient(135deg, rgba(18, 18, 18, 0.96), rgba(28, 28, 28, 0.96));
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #ff4a4a 50%),
+    linear-gradient(135deg, #ff4a4a 50%, transparent 50%),
+    linear-gradient(135deg, rgba(18, 18, 18, 0.96), rgba(28, 28, 28, 0.96));
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px),
+    0 0;
+  background-size: 6px 6px, 6px 6px, 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 10px 24px rgba(255, 0, 0, 0.08);
+}
+
+.products-sort-select:hover {
+  border-color: rgba(255, 59, 59, 0.55);
+}
+
+.products-sort-select:focus {
+  border-color: rgba(255, 59, 59, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.16);
+}
+
+.products-sort-select option {
+  background: #111111;
+  color: #ffffff;
+}
