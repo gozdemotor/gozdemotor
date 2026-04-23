@@ -2773,3 +2773,55 @@
     grid-template-columns: 1fr !important;
   }
 }
+/* ===== ÜRÜNLER SAYFASI 4'LÜ GRID ===== */
+
+.product-grid-page {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+/* Kartları biraz kompakt yap */
+.product-grid-page .product-img {
+  height: 200px !important;
+  object-fit: contain !important;
+  padding: 10px;
+}
+
+.product-grid-page .product-content {
+  padding: 14px !important;
+}
+
+.product-grid-page .product-content h3 {
+  font-size: 16px !important;
+}
+
+.product-grid-page .product-content p {
+  font-size: 13px !important;
+}
+
+.product-grid-page .product-detail-btn,
+.product-grid-page .product-cart-btn {
+  min-height: 38px !important;
+  font-size: 12px !important;
+}
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  .product-grid-page {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ===== MOBİL ===== */
+@media (max-width: 700px) {
+  .product-grid-page {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ===== KÜÇÜK MOBİL ===== */
+@media (max-width: 480px) {
+  .product-grid-page {
+    grid-template-columns: 1fr !important;
+  }
+}
