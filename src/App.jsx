@@ -963,6 +963,24 @@ export default function App() {
   const cartRef = useRef(null);
 
   useEffect(() => {
+    const handleScroll = () => {
+      const header = document.querySelector(".header");
+      if (!header) return;
+
+      if (window.scrollY > 40) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+
+  useEffect(() => {
     const getProducts = async () => {
       const { data, error } = await supabase
         .from("products")
