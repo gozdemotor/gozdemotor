@@ -243,6 +243,7 @@ function ProductsSection({
   selectedCategory,
   setSelectedCategory,
   addToCart,
+  pageVariant = "home",
 }) {
   const categories = useMemo(() => {
     const dynamicCategories = products
@@ -267,9 +268,9 @@ function ProductsSection({
           </div>
         </Reveal>
 
-        <div className="products-layout">
+        <div className={`products-layout ${pageVariant === "page" ? "products-layout-page" : "products-layout-home"}`}>
           <Reveal delay={100}>
-            <aside className="category-sidebar">
+            <aside className={`category-sidebar ${pageVariant === "page" ? "category-sidebar-page" : "category-sidebar-home"}`}>
               <h3>Kategoriler</h3>
 
               <div className="category-list">
@@ -290,8 +291,8 @@ function ProductsSection({
             </aside>
           </Reveal>
 
-          <div className="products-content">
-            <div className="product-grid">
+          <div className={`products-content ${pageVariant === "page" ? "products-content-page" : "products-content-home"}`}>
+            <div className={`product-grid ${pageVariant === "page" ? "product-grid-page" : "product-grid-home"}`}>
               {filteredProducts.map((item, index) => (
                 <ProductCard
                   key={item.id || item.name || index}
@@ -407,6 +408,7 @@ function HomePage({ products, addToCart, cartCount, cartRef }) {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         addToCart={addToCart}
+        pageVariant="home"
       />
 
       <section className="section section-dark" id="avantajlar">
@@ -515,12 +517,22 @@ function ProductsPage({ products, addToCart, cartCount, cartRef }) {
 
       <SiteHeader />
 
-      <section className="section">
+      <section className="section products-page-hero">
         <div className="container">
           <Reveal>
-            <div className="section-top" style={{ marginTop: "40px" }}>
-              <span className="section-mini">AYRI SAYFA GÖRÜNÜMÜ</span>
-              <h2>Tüm Ürünler</h2>
+            <div className="products-page-head">
+              <div>
+                <span className="section-mini">ÜRÜN KATALOĞU</span>
+                <h2>Tüm Ürünler</h2>
+                <p className="products-page-subtitle">
+                  Kategoriye göre filtrele, ürünleri incele ve hızlıca bilgi al.
+                </p>
+              </div>
+
+              <div className="products-page-summary">
+                <strong>{products.length}</strong>
+                <span>Aktif ürün</span>
+              </div>
             </div>
           </Reveal>
         </div>
@@ -531,6 +543,7 @@ function ProductsPage({ products, addToCart, cartCount, cartRef }) {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         addToCart={addToCart}
+        pageVariant="page"
       />
 
       <FloatingCart cartCount={cartCount} cartRef={cartRef} />
