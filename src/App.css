@@ -2227,3 +2227,56 @@
     font-size: 30px !important;
   }
 }
+
+/* ===== HERO YAZI BOYUT DÜZELTME (KÜÇÜLTME) ===== */
+
+.hero h1 {
+  font-size: 42px !important;
+  line-height: 1.2 !important;
+}
+
+.hero p {
+  font-size: 16px !important;
+}
+
+.hero-card h2 {
+  font-size: 26px !important;
+}
+
+.hero-card p {
+  font-size: 14px !important;
+}
+
+.hero-badge {
+  font-size: 12px !important;
+}
+
+.hero-list li {
+  font-size: 14px !important;
+}
+
+/* BUTONLAR */
+.hero-actions .btn {
+  font-size: 14px !important;
+  padding: 10px 18px !important;
+}
+
+/* ALT KUTULAR */
+.stat-card strong {
+  font-size: 20px !important;
+}
+
+.stat-card span {
+  font-size: 12px !important;
+}
+
+/* MOBİL */
+@media (max-width: 700px) {
+  .hero h1 {
+    font-size: 30px !important;
+  }
+
+  .hero-card h2 {
+    font-size: 22px !important;
+  }
+}
