@@ -397,6 +397,12 @@ function HomePage({ products, addToCart, cartCount, cartRef }) {
     { title: "Kargo İmkânı", text: "Uygun ürünlerde Türkiye geneli gönderim desteği." },
   ];
 
+  const showcaseCards = [
+    { kicker: "VİTRİN", title: "Yedek Parça", text: "Günlük ihtiyaç duyulan ürünleri hızlıca sor ve öğren." },
+    { kicker: "EKİPMAN", title: "Kask & Aksesuar", text: "Tarzını ve güvenliğini aynı anda güçlendiren ürünler." },
+    { kicker: "İLETİŞİM", title: "Anında Destek", text: "WhatsApp üzerinden ürün, fotoğraf ve fiyat bilgisi al." },
+  ];
+
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
@@ -478,6 +484,23 @@ function HomePage({ products, addToCart, cartCount, cartRef }) {
               </ul>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+
+      <section className="home-showcase-band">
+        <div className="container">
+          <div className="home-showcase-grid">
+            {showcaseCards.map((item, index) => (
+              <Reveal key={item.title} delay={50 + index * 70}>
+                <div className="home-showcase-card animated-box">
+                  <span className="home-showcase-kicker">{item.kicker}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
