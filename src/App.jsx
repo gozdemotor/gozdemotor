@@ -245,6 +245,10 @@ function ProductsSection({
   addToCart,
   pageVariant = "home",
 }) {
+  const [productSearch, setProductSearch] = useState("");
+  const [sortOption, setSortOption] = useState("default");
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
   const categories = useMemo(() => {
     const dynamicCategories = products
       .map((item) => item.category)
@@ -254,9 +258,34 @@ function ProductsSection({
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === "Tümü") return products;
-    return products.filter((item) => item.category === selectedCategory);
-  }, [products, selectedCategory]);
+    let result = selectedCategory === "Tümü"
+      ? [...products]
+      : products.filter((item) => item.category === selectedCategory);
+
+    const searchValue = productSearch.trim().toLowerCase();
+
+    if (searchValue) {
+      result = result.filter((item) => {
+        return (
+          (item.name || "").toLowerCase().includes(searchValue) ||
+          (item.description || "").toLowerCase().includes(searchValue) ||
+          (item.category || "").toLowerCase().includes(searchValue)
+        );
+      });
+    }
+
+    if (sortOption === "name-asc") {
+      result.sort((a, b) => (a.name || "").localeCompare(b.name || "", "tr"));
+    } else if (sortOption === "name-desc") {
+      result.sort((a, b) => (b.name || "").localeCompare(a.name || "", "tr"));
+    } else if (sortOption === "category-asc") {
+      result.sort((a, b) => (a.category || "").localeCompare(b.category || "", "tr"));
+    }
+
+    return result;
+  }, [products, selectedCategory, productSearch, sortOption]);
+
+  const isPageVariant = pageVariant === "page";
 
   return (
     <section className="section" id="urunler">
@@ -268,9 +297,48 @@ function ProductsSection({
           </div>
         </Reveal>
 
+        {isPageVariant ? (
+          <Reveal delay={60}>
+            <div className="products-toolbar">
+              <div className="products-toolbar-left">
+                <button
+                  type="button"
+                  className="mobile-filter-toggle"
+                  onClick={() => setMobileFilterOpen((prev) => !prev)}
+                >
+                  {mobileFilterOpen ? "Filtreyi Kapat" : "Filtrele"}
+                </button>
+
+                <div className="products-search-wrap">
+                  <input
+                    type="text"
+                    className="products-search-input"
+                    placeholder="Ürün ara..."
+                    value={productSearch}
+                    onChange={(e) => setProductSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="products-toolbar-right">
+                <select
+                  className="products-sort-select"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                >
+                  <option value="default">Sıralama</option>
+                  <option value="name-asc">Ada göre A-Z</option>
+                  <option value="name-desc">Ada göre Z-A</option>
+                  <option value="category-asc">Kategoriye göre</option>
+                </select>
+              </div>
+            </div>
+          </Reveal>
+        ) : null}
+
         <div className={`products-layout ${pageVariant === "page" ? "products-layout-page" : "products-layout-home"}`}>
           <Reveal delay={100}>
-            <aside className={`category-sidebar ${pageVariant === "page" ? "category-sidebar-page" : "category-sidebar-home"}`}>
+            <aside className={`category-sidebar ${pageVariant === "page" ? "category-sidebar-page" : "category-sidebar-home"} ${mobileFilterOpen ? "mobile-open" : ""}`}>
               <h3>Kategoriler</h3>
 
               <div className="category-list">
@@ -282,7 +350,10 @@ function ProductsSection({
                         ? "category-btn active"
                         : "category-btn"
                     }
-                    onClick={() => setSelectedCategory(category)}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setMobileFilterOpen(false);
+                    }}
                   >
                     {category}
                   </button>

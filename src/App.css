@@ -1831,3 +1831,125 @@
     height: 260px;
   }
 }
+
+
+
+/* ===== STEP 2: ÜRÜNLER SAYFASI TOOLBAR + MOBİL FİLTRE ===== */
+.products-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(14, 14, 14, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.products-toolbar-left,
+.products-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.products-search-wrap {
+  min-width: 320px;
+  max-width: 100%;
+}
+
+.products-search-input,
+.products-sort-select {
+  min-height: 50px;
+  width: 100%;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+}
+
+.products-sort-select {
+  min-width: 210px;
+}
+
+.products-search-input:focus,
+.products-sort-select:focus {
+  border-color: rgba(255, 59, 59, 0.55);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.12);
+}
+
+.mobile-filter-toggle {
+  display: none;
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 59, 59, 0.24);
+  background: linear-gradient(135deg, rgba(255, 42, 42, 0.16), rgba(184, 0, 0, 0.18));
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .products-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .products-toolbar-left,
+  .products-toolbar-right {
+    width: 100%;
+  }
+
+  .products-search-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .products-sort-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .mobile-filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .products-toolbar {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .products-toolbar-left {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    width: 100%;
+  }
+
+  .products-toolbar-right {
+    width: 100%;
+  }
+
+  .products-search-wrap {
+    min-width: 0;
+  }
+
+  .category-sidebar-page {
+    display: none;
+  }
+
+  .category-sidebar-page.mobile-open {
+    display: block;
+    position: static;
+    margin-bottom: 14px;
+  }
+}
