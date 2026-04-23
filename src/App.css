@@ -2701,3 +2701,75 @@
     font-size: 22px;
   }
 }
+/* ===== ANA SAYFA 4'LÜ GRID (KÜÇÜK ÜRÜNLER) ===== */
+
+.product-grid-home {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+/* Kart küçültme */
+.product-grid-home .product-card {
+  border-radius: 18px !important;
+}
+
+/* Görsel küçült */
+.product-grid-home .product-img {
+  height: 180px !important;
+  object-fit: contain !important;
+  padding: 10px;
+}
+
+/* İçerik küçült */
+.product-grid-home .product-content {
+  padding: 14px !important;
+}
+
+/* Başlık küçült */
+.product-grid-home .product-content h3 {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+}
+
+/* Açıklama küçült */
+.product-grid-home .product-content p {
+  font-size: 13px !important;
+}
+
+/* Fiyat küçült */
+.product-grid-home .product-price {
+  font-size: 16px !important;
+}
+
+/* Butonlar küçült */
+.product-grid-home .product-detail-btn,
+.product-grid-home .product-cart-btn {
+  min-height: 38px !important;
+  font-size: 12px !important;
+  padding: 0 10px !important;
+}
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  .product-grid-home {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ===== MOBİL ===== */
+@media (max-width: 700px) {
+  .product-grid-home {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .product-grid-home .product-img {
+    height: 160px !important;
+  }
+}
+
+/* ===== KÜÇÜK MOBİL ===== */
+@media (max-width: 480px) {
+  .product-grid-home {
+    grid-template-columns: 1fr !important;
+  }
+}
