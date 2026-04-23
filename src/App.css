@@ -2032,101 +2032,106 @@
 
 
 
-/* ===== HEADER PREMIUM GLASS + SCROLL EFFECT ===== */
-.header {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1200 !important;
-  background: rgba(0, 0, 0, 0.42) !important;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition:
-    background 0.3s ease,
-    padding 0.3s ease,
-    box-shadow 0.3s ease,
-    backdrop-filter 0.3s ease;
+/* ===== ÜRÜN KARTLARI BÜYÜTME ===== */
+.product-grid {
+  gap: 24px !important;
 }
 
-.header::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 0, 0, 0.06),
-    transparent
-  );
-  pointer-events: none;
+.product-grid-page {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 26px !important;
 }
 
-.header.scrolled {
-  background: rgba(0, 0, 0, 0.62) !important;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+.product-grid-page .product-card {
+  border-radius: 24px !important;
 }
 
-.site {
-  padding-top: 110px;
+.product-grid-page .product-image-wrap {
+  border-radius: 24px 24px 0 0 !important;
 }
 
-.header-inner {
-  transition: min-height 0.3s ease, padding 0.3s ease, gap 0.3s ease;
+.product-grid-page .product-img {
+  height: 320px !important;
 }
 
-.brand-logo {
-  transition: width 0.3s ease, transform 0.3s ease;
+.product-grid-page .product-content {
+  padding: 22px !important;
 }
 
-.header.scrolled .brand-logo {
-  width: 148px;
+.product-grid-page .product-content h3 {
+  font-size: 28px !important;
+  line-height: 1.2 !important;
 }
 
-.nav a {
-  position: relative;
-  transition: color 0.25s ease, transform 0.25s ease;
+.product-grid-page .product-content p {
+  font-size: 16px !important;
+  line-height: 1.75 !important;
 }
 
-.nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 0%;
-  height: 2px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ff3b3b, #b80000);
-  transition: width 0.28s ease;
+.product-grid-page .product-price {
+  font-size: 24px !important;
 }
 
-.nav a:hover::after {
-  width: 100%;
+.product-grid-page .product-old-price {
+  font-size: 16px !important;
 }
 
-.nav a:hover {
-  color: #ffffff;
-  transform: translateY(-1px);
+.product-grid-page .product-category-inline,
+.product-grid-page .product-video-inline {
+  font-size: 14px !important;
 }
 
-@media (max-width: 900px) {
-  .site {
-    padding-top: 118px;
+.product-grid-page .product-card-actions {
+  padding: 0 22px 22px !important;
+  gap: 12px !important;
+}
+
+.product-grid-page .product-detail-btn,
+.product-grid-page .product-cart-btn {
+  min-height: 52px !important;
+  padding: 0 20px !important;
+  font-size: 15px !important;
+  border-radius: 14px !important;
+}
+
+@media (max-width: 1180px) {
+  .product-grid-page .product-img {
+    height: 290px !important;
   }
 
-  .header.scrolled .brand-logo {
-    width: 132px;
+  .product-grid-page .product-content h3 {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .product-grid-page {
+    grid-template-columns: 1fr !important;
+  }
+
+  .product-grid-page .product-img {
+    height: 340px !important;
+  }
+
+  .product-grid-page .product-content h3 {
+    font-size: 26px !important;
+  }
+
+  .product-grid-page .product-content p {
+    font-size: 15px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .site {
-    padding-top: 126px;
+  .product-grid-page .product-img {
+    height: 300px !important;
   }
 
-  .header.scrolled .brand-logo {
-    width: 120px;
+  .product-grid-page .product-content {
+    padding: 18px !important;
+  }
+
+  .product-grid-page .product-content h3 {
+    font-size: 22px !important;
   }
 }
