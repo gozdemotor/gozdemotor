@@ -390,6 +390,13 @@ function HomePage({ products, addToCart, cartCount, cartRef }) {
     "Türkiye geneli gönderim",
   ];
 
+  const trustCards = [
+    { title: "Hızlı Tedarik", text: "Sık sorulan ürünlerde pratik çözüm ve hızlı geri dönüş." },
+    { title: "Gerçek Mağaza", text: "Şuhut / Afyon merkezli fiziksel mağaza ve esnaf güvencesi." },
+    { title: "WhatsApp Destek", text: "Ürün sorma, görsel isteme ve hızlı iletişim tek noktada." },
+    { title: "Kargo İmkânı", text: "Uygun ürünlerde Türkiye geneli gönderim desteği." },
+  ];
+
   return (
     <div className="site">
       <div className="site-ambient-glow"></div>
@@ -471,6 +478,22 @@ function HomePage({ products, addToCart, cartCount, cartRef }) {
               </ul>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      <section className="home-trust-strip">
+        <div className="container">
+          <div className="home-trust-grid">
+            {trustCards.map((item, index) => (
+              <Reveal key={item.title} delay={80 + index * 80}>
+                <div className="home-trust-card animated-box">
+                  <span className="home-trust-kicker">GÖZDE MOTOR</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -967,7 +990,7 @@ export default function App() {
       const header = document.querySelector(".header");
       if (!header) return;
 
-      if (window.scrollY > 40) {
+      if (window.scrollY > 24) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
@@ -975,7 +998,7 @@ export default function App() {
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
