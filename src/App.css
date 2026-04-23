@@ -2825,3 +2825,41 @@
     grid-template-columns: 1fr !important;
   }
 }
+/* ===== ÜRÜN DETAY FOTO KIRPILMA FIX ===== */
+
+.product-detail-image-wrap {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 420px;
+  max-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* ASIL ÖNEMLİ KISIM */
+.product-detail-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important; /* cover yerine contain */
+  object-position: center;
+  background: #000;
+}
+
+/* ===== MOBİL ===== */
+@media (max-width: 768px) {
+  .product-detail-image-wrap {
+    min-height: 320px;
+    max-height: 420px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-detail-image-wrap {
+    min-height: 280px;
+    max-height: 360px;
+  }
+}
